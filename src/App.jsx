@@ -2591,12 +2591,15 @@ function App() {
                 />
 
                 <motion.form
-                  className="space-y-6"
-                  variants={staggerContainerVariants}
-                  initial="initial"
-                  animate="animate"
-                  transition={{ delay: 0.8 }}
-                >
+                className="space-y-6"
+                variants={staggerContainerVariants}
+                initial="initial"
+                animate="animate"
+                transition={{ delay: 0.8 }}
+                method="POST"
+                name="contact"                 // <-- ADD THIS
+                data-netlify="true"            // <-- ADD THIS
+            >
                   {/* Form fields styled in the two-column layout from the video (Label on left, Input/Select on right) */}
 
                   <motion.div
@@ -2609,7 +2612,7 @@ function App() {
                     >
                       Full Name
                     </label>
-
+                    <input type="hidden" name="form-name" value="contact" />
                     <input
                       type="text"
                       id="name"
