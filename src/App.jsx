@@ -320,6 +320,7 @@ const ParallaxImage = ({ src, alt, className = "" }) => {
   );
 };
 
+
 /**
  * Accordion (FAQ) Component
  */
@@ -900,16 +901,16 @@ const Footer = ({ setPage }) => {
 
 
 /**
- * 4. Home Page (UPDATED with ImageFollower)
+ * 4. Home Page (UPDATED with 5 Service Cards)
  */
 const HomePage = ({ setPage }) => {
   // FEEDBACK #1: Replace these image URLs
-  // FEEDBACK #3 & #7: Updated services list to be a 4-card grid
+  // FEEDBACK #3 & #7: Updated services list to be a 5-card grid
   const services = [
     {
       title: "Sports Event Management",
       icon: Medal,
-      desc: "From planning to on-ground execution, we deliver memorable, high-octane events.",
+      desc: "From planning to execution, we deliver memorable, high-octane events.",
       img: "ser2.jpg", // <-- REPLACE
     },
     {
@@ -929,6 +930,13 @@ const HomePage = ({ setPage }) => {
       icon: Globe,
       desc: "Custom apparel and merchandise that connects your brand with your community.",
       img: "./merchandise.webp", // <-- REPLACE
+    },
+    // ADDED CORPORATE SPORTS EVENTS HERE
+    {
+        title: "Corporate Sports Events",
+        icon: Award, // Using Award icon, change if needed
+        desc: "Boost team morale and brand visibility with professionally managed corporate sports.",
+        img: "./corporate-sports.jpg", // <-- REPLACE (add this new image)
     },
   ];
 
@@ -991,8 +999,6 @@ const HomePage = ({ setPage }) => {
       </motion.section>
 
       {/* Marquee Section */}
-      {/* FEEDBACK #2: Added speed={40} to slow it down */}
-      {/* FEEDBACK #7: Updated text to include new services */}
       <Marquee
         text="Corporate Sports Events • Media Management • Sports Event Management • Athlete Management • Design Services •"
         speed={40}
@@ -1001,13 +1007,11 @@ const HomePage = ({ setPage }) => {
       {/* Philosophy Section */}
       <section className="py-20 md:py-32 bg-black text-[#F5F5F5]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
-          {/* FEEDBACK #5: Simplified Headline */}
           <AnimatedTextLines
             text={"WE CONNECT BRANDS & ATHLETES\nTO THEIR COMMUNITIES."}
             el="h2"
             className="text-4xl md:text-6xl font-bold leading-tight"
           />
-          {/* FEEDBACK #5: Simplified Content */}
           <motion.p
             variants={scrollRevealVariants}
             initial="initial"
@@ -1032,8 +1036,9 @@ const HomePage = ({ setPage }) => {
             className="text-3xl font-bold text-center sm:text-4xl mb-16"
           />
 
-          {/* FEEDBACK #3: Changed grid to 4 columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* UPDATED GRID: Changed lg:grid-cols-4 to lg:grid-cols-5 */}
+          {/* Also added md:grid-cols-3 for better responsiveness */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {services.map((service, index) => (
               <motion.div
                 key={index}
@@ -1144,9 +1149,6 @@ const HomePage = ({ setPage }) => {
           </motion.div>
         </div>
       </section>
-
-      {/* FEEDBACK #3: This full-screen merchandise section has been REMOVED */}
-      {/* <MerchandiseSection setPage={setPage} /> */}
 
       {/* Founder CTA */}
       <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
