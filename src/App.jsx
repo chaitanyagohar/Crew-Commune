@@ -127,12 +127,11 @@ const PageWrapper = ({ children }) => (
     initial="initial"
     animate="animate"
     exit="exit"
-    className="bg-[#111111]"
+    className="bg-[#111111] transform-gpu" // <-- ADD THIS CLASS
   >
     {children}
   </motion.div>
 );
-
 /**
  * AnimatedText Component (Word-by-word reveal)
  */
@@ -241,13 +240,54 @@ const AnimatedTextLines = ({
 };
 
 /**
- * MagneticButton Component (Effect Disabled)
+ * MagneticButton Component (NOW WORKING)
+ * This component makes its children "stick" to the mouse cursor.
  */
 const MagneticButton = ({ children, strength = 30, ...props }) => {
-  // All hooks, event handlers, and motion effects have been removed.
-  // We return a simple div that accepts the props (like className)
-  // to avoid breaking the layout.
-  return <div {...props}>{children}</div>;
+  const ref = useRef(null);
+  const springConfig = {
+    type: "spring",
+    stiffness: 150,
+    damping: 15,
+    mass: 0.1,
+  };
+  const x = useSpring(0, springConfig);
+  const y = useSpring(0, springConfig);
+
+  const onMouseMove = (e) => {
+    if (!ref.current) return;
+
+    const { clientX, clientY } = e;
+    const { width, height, left, top } = ref.current.getBoundingClientRect();
+    
+    // Calculate distance from center of button
+    const distanceX = clientX - (left + width / 2);
+    const distanceY = clientY - (top + height / 2);
+
+    // Set spring target
+    x.set(distanceX * (strength / 100)); // Use strength prop
+    y.set(distanceY * (strength / 100));
+  };
+
+  const onMouseLeave = () => {
+    // Spring back to 0
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      style={{ x, y }} // Apply the spring values
+      transition={springConfig}
+      {...props} // Pass down other props like className
+      data-cursor-magnetic="true" // This tells your CustomCursor to shrink!
+    >
+      {children}
+    </motion.div>
+  );
 };
 
 /**
