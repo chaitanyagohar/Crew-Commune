@@ -6,6 +6,8 @@ import {
   useScroll,
   useTransform,
   useSpring,
+  useAnimation, // Added for CircularText
+  useMotionValue, // Added for CircularText
 } from "framer-motion";
 
 import {
@@ -41,7 +43,7 @@ const loadingScreenVariants = {
   animate: { opacity: 1 },
   exit: {
     opacity: 0,
-    transition: { duration: 0.5, delay: 1.5 },
+    transition: { duration: 0.5, delay: 0.6 },
   },
 };
 
@@ -303,7 +305,7 @@ const ParallaxImage = ({ src, alt, className = "" }) => {
   return (
     <div
       ref={ref}
-      className={`w-full h-full overflow-hidden rounded-2xl ${className}`}
+      className={`w-full h-full overflow-hidden rounded-xl ${className}`}
       data-cursor-hover="image"
     >
       <motion.img
@@ -319,7 +321,51 @@ const ParallaxImage = ({ src, alt, className = "" }) => {
     </div>
   );
 };
+/**
+ * NEW: MobileHeroGapSlideshow Component
+ * Replicates the "cross-fade with scale" animation from the new video.
+ */
+const MobileHeroGapSlideshow = ({ images }) => {
+  const [index, setIndex] = useState(0);
 
+  useEffect(() => {
+    // This interval cycles to the next image every 2.5 seconds
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 700); // 0.7-second interval
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [images.length]);
+
+  return (
+    // Add overflow-hidden to the container to clip the animation
+    <div className="relative w-full h-full overflow-hidden ">
+      <AnimatePresence>
+        <motion.img
+          key={index} // This is crucial for AnimatePresence
+          src={images[index].src}
+          alt={images[index].alt}
+          initial={{ opacity: 0, scale: 1 }} // Start slightly zoomed in
+          animate={{
+            opacity: 1,
+            scale: 1, // Settle to 1
+            transition: { duration: 0.7, ease: "easeOut" },
+          }}
+          exit={{
+            opacity: 0,
+            scale: 1, // Shrink out
+            transition: { duration: 0.5, ease: "easeIn" },
+          }}
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => {
+            e.target.src =
+              "https://placehold.co/300x200/333333/555555?text=Image";
+          }}
+        />
+      </AnimatePresence>
+    </div>
+  );
+};
 
 /**
  * Accordion (FAQ) Component
@@ -546,25 +592,80 @@ const ImageFollower = ({ img, index }) => {
   );
 };
 
-/**
- * 1. Loading Screen Component
- */
-const LoadingScreen = () => (
-  <motion.div
-    variants={loadingScreenVariants}
-    initial="initial"
-    animate="animate"
-    exit="exit"
-    className="fixed inset-0 bg-[#BFFF00] z-[9999] flex items-center justify-center"
-  >
+const LoadingScreen = () => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const duration = 4000; // 4 seconds
+    const interval = duration / 100;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current++;
+      setProgress(current);
+      if (current >= 100) clearInterval(timer);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const loadingScreenVariants = {
+    initial: { opacity: 1 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } },
+  };
+
+  const loadingTextVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 1.2, ease: "easeOut" },
+    },
+  };
+
+  return (
     <motion.div
-      variants={loadingTextVariants}
-      className="text-3xl font-bold text-black"
+      variants={loadingScreenVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
     >
-      CREW COMMUNE
+      {/* Background Video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/crewload.mp4" type="video/mp4" />
+      </video>
+
+      {/* Solid Green Overlay (70% opacity) */}
+      <div className="absolute inset-0 bg-[#BFFF00]/70"></div>
+
+      {/* Central Text */}
+      <motion.div
+        variants={loadingTextVariants}
+        className="relative text-4xl md:text-5xl font-extrabold text-black tracking-widest"
+      >
+        CREW COMMUNE
+      </motion.div>
+
+      {/* Bottom-Right Counter */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="absolute bottom-6 right-8 text-black text-lg font-semibold"
+      >
+        {progress}%
+      </motion.div>
     </motion.div>
-  </motion.div>
-);
+  );
+};
 
 /**
  * 2. Header Component
@@ -898,26 +999,17 @@ const Footer = ({ setPage }) => {
     </footer>
   );
 };
-
-
 /**
- * 4. Home Page (UPDATED with 5 Service Cards)
+ * 4. Home Page (UPDATED with Centered Services & new CTA)
  */
 const HomePage = ({ setPage }) => {
-  // FEEDBACK #1: Replace these image URLs
-  // FEEDBACK #3 & #7: Updated services list to be a 5-card grid
+  // Services array (UPDATED: "Athlete Management" removed)
   const services = [
     {
       title: "Sports Event Management",
       icon: Medal,
       desc: "From planning to execution, we deliver memorable, high-octane events.",
       img: "ser2.jpg", // <-- REPLACE
-    },
-    {
-      title: "Athlete Management",
-      icon: Briefcase,
-      desc: "Partners in success: managing brand deals, contracts, and long-term career growth.",
-      img: "./ser1.webp", // <-- REPLACE
     },
     {
       title: "Media Management",
@@ -931,15 +1023,74 @@ const HomePage = ({ setPage }) => {
       desc: "Custom apparel and merchandise that connects your brand with your community.",
       img: "./merchandise.webp", // <-- REPLACE
     },
-    // ADDED CORPORATE SPORTS EVENTS HERE
     {
-        title: "Corporate Sports Events",
-        icon: Award, // Using Award icon, change if needed
-        desc: "Boost team morale and brand visibility with professionally managed corporate sports.",
-        img: "./corporate-sports.jpg", // <-- REPLACE (add this new image)
+      title: "Corporate Sports Events",
+      icon: Award,
+      desc: "Boost team morale and brand visibility with professionally managed corporate sports.",
+      img: "./coorporateevents.jpg", // <-- REPLACE
     },
   ];
 
+  // Use all 6 images for the slideshow
+  const mobileSlideshowImages = [
+    heroImages[0], // cricket
+    heroImages[1], // basket
+    heroImages[2], // merch
+    heroImages[3], // tennis
+    heroImages[4], // Usain-Bolt
+    heroImages[5], // volley
+  ];
+
+  // --- NEW ANIMATION VARIANTS FOR VIDEO EFFECT (Corrected Timing) ---
+  const mobileHeroContainerVariants = {
+    initial: { opacity: 0 },
+    animate: {
+      opacity: 1,
+      // No stagger, we will use absolute delays
+    },
+  };
+
+  const textInnovatingVariants = {
+    initial: { y: 0, scale: 0.5, opacity: 0 }, // Start centered, small
+    animate: {
+      y: -110, // Moves UP
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.4, 0.0, 0.2, 1],
+        delay: 1.0, // Wait 1s after loader
+      },
+    },
+  };
+
+  const textSuccessVariants = {
+    initial: { y: 0, scale: 0.5, opacity: 0 }, // Start centered, small
+    animate: {
+      y: 110, // Moves DOWN
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.4, 0.0, 0.2, 1],
+        delay: 1.0, // Wait 1s (same as "INNOVATING")
+      },
+    },
+  };
+
+  const slideshowVariants = {
+    initial: { scale: 0, opacity: 0 }, // Start centered, invisible
+    animate: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        delay: 1.1, // Start 0.1s AFTER the text starts splitting
+        duration: 0.6,
+        ease: [0.4, 0.0, 0.2, 1],
+      },
+    },
+  };
+  // --- END NEW VARIANTS ---
 
   return (
     <PageWrapper>
@@ -947,16 +1098,11 @@ const HomePage = ({ setPage }) => {
       <motion.section
         initial="initial"
         animate="animate"
-        className="relative h-screen flex items-center justify-center text-center overflow-hidden bg-black"
+        className="relative h-[100vh] flex items-center justify-center text-center overflow-hidden bg-black"
       >
-        {/* Cursor-Following Image Grid (NEW IMPLEMENTATION) */}
-        {heroImages.map((img, index) => (
-          <ImageFollower key={index} img={img} index={index} />
-        ))}
-
-        {/* Background Video (Kept for mobile/fallback) */}
+        {/* Layer 1: Background Video (z-0) */}
         <motion.div
-          className="absolute inset-0 z-0 opacity-20"
+          className="absolute inset-0 z-0 opacity-30"
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{
@@ -972,40 +1118,99 @@ const HomePage = ({ setPage }) => {
             loop
             className="w-full h-full object-cover"
             src="./crewhero.mp4"
-            poster="https://images.unsplash.com/photo-1506146332389-18140e7f702d?w=800&auto=format&fit=crop&q=60"
+            poster="https://images.unsplash.com/photo-1506146332389-18140e7f702d?w=800&auto-format&fit=crop&q=60"
           />
-          <div className="absolute inset-0 bg-black/5"></div>
         </motion.div>
 
-        {/* Text Content */}
-        <div className="relative z-10 max-w-4xl px-4 pointer-events-none">
-          {/* Main Title Animation */}
-          <AnimatedText
-            text="INNOVATING"
-            el="span"
-            className="block text-6xl sm:text-8xl font-extrabold text-white"
-            delay={0.8}
-            variants={{
-              animate: { y: [50, 0], opacity: [0, 1], scale: [0.8, 1] },
-            }}
-          />
-          <AnimatedText
-            text="SUCCESS."
-            el="span"
-            className="block text-[#BFFF00] text-6xl sm:text-8xl font-extrabold"
-            delay={1.2}
-          />
+        {/* Layer 2: Desktop Image Followers (z-auto) */}
+        {/* This is correct, no wrapper needed */}
+        {heroImages.map((img, index) => (
+          <ImageFollower key={index} img={img} index={index} />
+        ))}
+
+        {/* Layer 3: Text Content (z-20) */}
+        <div className="relative z-20 max-w-4xl px-4 pointer-events-none">
+          {/* --- DESKTOP HERO TEXT --- */}
+          {/* This uses your original word-by-word animation, hidden on mobile */}
+          <div className="hidden md:block">
+            <AnimatedText
+              text="INNOVATING"
+              el="span"
+              className="block text-6xl sm:text-8xl font-extrabold text-white"
+              delay={0.8}
+              variants={{
+                animate: { y: [50, 0], opacity: [0, 1], scale: [0.8, 1] },
+              }}
+            />
+            <AnimatedText
+              text="SUCCESS."
+              el="span"
+              className="block text-[#BFFF00] text-6xl sm:text-8xl font-extrabold"
+              delay={1.2}
+            />
+          </div>
+
+          {/* --- NEW MOBILE HERO TEXT (Video Style) --- */}
+          {/* This container centers all the animating elements */}
+          <motion.div
+            className="md:hidden flex flex-col items-center justify-center relative h-80" // Set a height for the absolute elements
+            variants={mobileHeroContainerVariants}
+            initial="initial"
+            animate="animate"
+          >
+            {/* "INNOVATING" text line, starts centered */}
+            <motion.span
+              variants={textInnovatingVariants}
+              className="block text-6xl font-extrabold text-white absolute z-20"
+            >
+              INNOVATING
+            </motion.span>
+
+            {/* Slideshow is absolutely positioned in the middle (z-10) */}
+            <motion.div
+              className="w-[70vw] h-[25vh] rounded-xl shadow-2xl pointer-events-auto absolute z-10"
+              variants={slideshowVariants}
+            >
+              <MobileHeroGapSlideshow images={mobileSlideshowImages} />
+            </motion.div>
+
+            {/* "SUCCESS." text line, starts centered */}
+            <motion.span
+              variants={textSuccessVariants}
+              className="block text-6xl font-extrabold text-[#BFFF00] absolute z-20"
+            >
+              SUCCESS.
+            </motion.span>
+          </motion.div>
         </div>
+
+        {/* --- NEW: Layer 4: Circular Text (z-20) --- */}
+        {/* UPDATED: Wrapper is full-width (left-0 right-0) and component centers itself with mx-auto */}
+        <motion.div
+          className="absolute bottom-12 left-0 right-0 z-20"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 0.6 }}
+          transition={{ delay: 2.0, duration: 0.8 }} // Fade in after main hero text
+          data-cursor-hover="link"
+        >
+          <CircularText
+            text="SCROLL*DOWN*EXPLORE*"
+            onHover="speedUp"
+            spinDuration={12}
+            // Use Tailwind for styling
+            className="text-[#BFFF00] uppercase text-xs font-bold"
+          />
+        </motion.div>
       </motion.section>
 
-      {/* Marquee Section */}
+      {/* Marquee Section (UPDATED to remove Athlete Management) */}
       <Marquee
-        text="Corporate Sports Events • Media Management • Sports Event Management • Athlete Management • Design Services •"
+        text="Corporate Sports Events • Media Management • Sports Event Management • Design Services •"
         speed={40}
       />
 
       {/* Philosophy Section */}
-      <section className="py-20 md:py-32 bg-black text-[#F5F5F5]">
+      <section className="py-20 md:py-32 bg-black text-[#F5F5FF]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedTextLines
             text={"WE CONNECT BRANDS & ATHLETES\nTO THEIR COMMUNITIES."}
@@ -1036,9 +1241,12 @@ const HomePage = ({ setPage }) => {
             className="text-3xl font-bold text-center sm:text-4xl mb-16"
           />
 
-          {/* UPDATED GRID: Changed lg:grid-cols-4 to lg:grid-cols-5 */}
-          {/* Also added md:grid-cols-3 for better responsiveness */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          {/* --- UPDATED GRID ---
+              Changed md:grid-cols-3 lg:grid-cols-5 to md:grid-cols-4
+              This makes a 2x2 grid on small/medium and a 1x4 grid on large,
+              which perfectly centers the 4 service items.
+          */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {services.map((service, index) => (
               <motion.div
                 key={index}
@@ -1104,7 +1312,6 @@ const HomePage = ({ setPage }) => {
             whileInView="whileInView"
             viewport={{ once: true, amount: 0.3 }}
           >
-            {/* FEEDBACK #1: Replace this image */}
             <ParallaxImage
               src="./athlete-home.jpg" // <-- REPLACE
               alt="Athlete running"
@@ -1150,61 +1357,53 @@ const HomePage = ({ setPage }) => {
         </div>
       </section>
 
-      {/* Founder CTA */}
+      {/* --- NEW CTA SECTION --- 
+          Added this section to add more scroll length
+          and provide a clear call-to-action to the contact page.
+      */}
       <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          <div
-            className="overflow-hidden rounded-2xl h-[60vh]"
-            data-cursor-hover="image"
-          >
-            {/* FEEDBACK #1: Replace this image (e.g., Indian founder or abstract) */}
-            <ParallaxImage
-              src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" // <-- REPLACE
-              alt="The Founder"
-            />
-          </div>
-          <motion.div
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+          <AnimatedText
+            text="Ready to Start Your Journey?"
+            el="h2"
+            className="text-3xl sm:text-4xl font-bold mb-6"
+          />
+          <motion.p
             variants={scrollRevealVariants}
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-lg text-neutral-400 max-w-2xl mx-auto mb-10"
           >
-            <span className="text-sm font-bold text-[#BFFF00] uppercase tracking-widest">
-              The Foundation
-            </span>
-            <AnimatedText
-              text="Founded to Merge Sports, Branding, and Community."
-              el="h2"
-              className="text-3xl sm:text-4xl font-bold my-4"
-            />
-            <p className="text-lg text-neutral-400 mb-8">
-              Crew Commune was built to redefine the boundaries of possibility.
-              We empower athletes, organize high-octane events, and build
-              vibrant communities through strategic media engagement.
-            </p>
-            <MagneticButton strength={25}>
-              <motion.button
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                onClick={() => {
-                  window.scrollTo(0, 0);
-                  setPage("about");
-                }}
-                className="text-lg font-semibold text-[#F5F5F5] flex items-center space-x-2"
-                data-cursor-hover="link"
-              >
-                <span>Discover Our Story</span>
-                <ArrowRight size={20} />
-              </motion.button>
-            </MagneticButton>
-          </motion.div>
+            Let's collaborate to create unforgettable experiences and elevate
+            your brand to the next level. Get in touch with our team today to
+            discuss your vision.
+          </motion.p>
+          <MagneticButton strength={25}>
+            <motion.button
+              whileHover={{ x: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              onClick={() => {
+                window.scrollTo(0, 0);
+                setPage("contact");
+              }}
+              className="text-lg font-semibold text-[#BFFF00] flex items-center space-x-2 mx-auto"
+              data-cursor-hover="link"
+            >
+              <span>Get In Touch</span>
+              <ArrowRight size={20} />
+            </motion.button>
+          </MagneticButton>
         </div>
       </section>
+
+      {/* Founder CTA (COMMENTED OUT) */}
+      {/* <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
+  ...
+      </section> */}
     </PageWrapper>
   );
 };
-
 // NEW COMPONENT: Milestone for About Page Scroll
 const Milestone = ({ year, title, description, isRight }) => (
   <motion.div
@@ -1508,11 +1707,17 @@ const ServicesPage = ({ setPage }) => {
       icon: Medal,
       img: "./sports.jpeg", // <-- REPLACE
     },
-    {
-      title: "Athlete Management",
-      desc: "We’re more than just managers – we’re partners in your journey to success. Our personalized approach helps athletes unlock their full potential. Services include talent scouting, brand partnerships, contract negotiations, and long-term career development.",
-      icon: Briefcase,
-      img: "./athlete.png", // <-- REPLACE
+    // {
+    //   title: "Athlete Management",
+    //   desc: "We’re more than just managers – we’re partners in your journey to success. Our personalized approach helps athletes unlock their full potential. Services include talent scouting, brand partnerships, contract negotiations, and long-term career development.",
+    //   icon: Briefcase,
+    //   img: "./athlete.png", // <-- REPLACE
+    // },
+     {
+      title: "Corporate Sports Events",
+      desc: "Boost team morale and brand visibility with our professionally managed corporate sports days, tournaments, and wellness programs. We handle everything from venue booking to activity planning for a seamless, engaging employee experience.",
+      icon: Award,
+      img: "./coorporateevents.jpg", // <-- REPLACE (Add this new image)
     },
     {
       title: "Media Management",
@@ -1526,12 +1731,7 @@ const ServicesPage = ({ setPage }) => {
       icon: Globe,
       img: "./merchandise.webp", // <-- REPLACE
     },
-    {
-      title: "Corporate Sports Events",
-      desc: "Boost team morale and brand visibility with our professionally managed corporate sports days, tournaments, and wellness programs. We handle everything from venue booking to activity planning for a seamless, engaging employee experience.",
-      icon: Award,
-      img: "./corporate-sports.jpg", // <-- REPLACE (Add this new image)
-    },
+   
   ];
 
   const differentiators = [
@@ -1693,195 +1893,317 @@ const ServicesPage = ({ setPage }) => {
   );
 };
 
-/**
- * 7. Events Page (ENHANCED - Horizontal Scroll)
- */
-// FEEDBACK #4: Added `setPage` prop
 const EventsPage = ({ setPage }) => {
-  // FEEDBACK #1: Replace these image URLs
-  const events = [
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  // 🟢 UPCOMING EVENTS (Only 2)
+  const upcomingEvents = [
     {
-      title: "Mumbai Marathon",
-      date: "Jan 18, 2026",
-      location: "Mumbai, IN",
-      desc: "The biggest running event in India, managed end-to-end by Crew Commune, delivering flawless logistics and massive media coverage.",
-      img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80", // <-- REPLACE
+      title: "Pune Twin City Marathon",
+      date: "Feb 08, 2026",
+      location: "Pune, IN",
+      desc: "A grand-scale marathon connecting Pune and PCMC — empowering fitness, unity, and community spirit.",
+      category: "Running",
+      img: "./punetwincity.jpg",
+      registerLink: "/register", // 🔗 Change to your form page or Google Form link
     },
     {
-      title: "Delhi Half Marathon",
-      date: "Oct 20, 2025",
+      title: "Udaan Nari Shakti Run",
+      date: "Mar 10, 2026",
       location: "New Delhi, IN",
-      desc: "A world-class half marathon event, showcasing strategic urban planning and deep athlete engagement.",
-      img: "./delhimarathon.avif", // <-- REPLACE
-    },
-    {
-      title: "Coastal Surf Invitational",
-      date: "Dec 05, 2025",
-      location: "Oahu, HI",
-      desc: "Bringing Indian athlete talent to international waters, handling all media logistics and international brand partnership activation.",
-      img: "./surf.jpeg", // <-- REPLACE
-    },
-    {
-      title: "Goa Skate Jam",
-      date: "Feb 22, 2026",
-      location: "Goa, IN",
-      desc: "Fostering community and youth engagement through action sports, focusing on creative media content and local sponsorship.",
-      img: "./skate.avif", // <-- REPLACE
-    },
-    {
-      title: "Himalayan MTB Rally",
-      date: "Apr 10, 2026",
-      location: "Manali, IN",
-      desc: "An extreme endurance event in challenging terrain, managed with meticulous attention to safety, athlete welfare, and high-production documentary coverage.",
-      img: "./mtb.jpg", // <-- REPLACE
+      desc: "A women’s empowerment event celebrating strength, resilience, and equality through fitness and sports.",
+      category: "Running",
+      img: "./udaannari.jpg",
+      registerLink: "/register", // 🔗 Same here
     },
   ];
 
-  const targetRef = useRef(null);
-  const numEvents = events.length;
-  const sectionHeight = `${numEvents}00vh`;
+  // ⚫ PAST EVENTS
+  const pastEvents = [
+    {
+      title: "Mumbai City Marathon",
+      date: "Jan 12, 2025",
+      location: "Mumbai, IN",
+      desc: "India’s largest city marathon uniting professional runners, fitness enthusiasts, and corporate teams.",
+      category: "Running",
+      img: "./mumbai.jpg",
+    },
+    {
+      title: "Goa Open Water Swim",
+      date: "Mar 05, 2025",
+      location: "Goa, IN",
+      desc: "A professional open-water swimming event set on Goa’s scenic beaches — combining adventure and endurance.",
+      category: "Swimming",
+      img: "./goaswim.jpg",
+    },
+    {
+      title: "Corporate Wellness Marathon",
+      date: "Apr 10, 2025",
+      location: "Bengaluru, IN",
+      desc: "A unique marathon for corporate teams promoting fitness, teamwork, and leadership through endurance running.",
+      category: "Corporate",
+      img: "./corporatemarathon.jpg",
+    },
+    {
+      title: "National Athletic Meet",
+      date: "May 14, 2025",
+      location: "Pune, IN",
+      desc: "A multi-discipline athletic championship featuring national-level competitors in track and field events.",
+      category: "Athletics",
+      img: "./athleticmeet.jpg",
+    },
+    {
+      title: "Delhi Cyclothon",
+      date: "Nov 18, 2024",
+      location: "New Delhi, IN",
+      desc: "A thrilling cycling event across Delhi NCR — promoting sustainable transport and health awareness.",
+      category: "Cycling",
+      img: "./delhicycle.jpg",
+    },
+    {
+      title: "India Junior Olympiad",
+      date: "Jun 02, 2024",
+      location: "Chandigarh, IN",
+      desc: "A national-scale Olympiad combining academic and athletic excellence for young athletes.",
+      category: "Olympiad",
+      img: "./olympiad.jpg",
+    },
+  ];
 
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start start", "end end"],
-  });
+  const categories = [
+    "All",
+    "Running",
+    "Cycling",
+    "Swimming",
+    "Corporate",
+    "Athletics",
+    "Olympiad",
+  ];
 
-  // FEEDBACK #6: Smoothed UX with useSpring
-  const xRaw = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["0%", `-${(numEvents - 1) * 100}vw`]
-  );
-  const x = useSpring(xRaw, {
-    stiffness: 200,
-    damping: 50,
-    restDelta: 0.001,
-  });
+  const filterEvents = (list) =>
+    activeCategory === "All"
+      ? list
+      : list.filter((e) => e.category === activeCategory);
+
+  const filteredUpcoming = filterEvents(upcomingEvents);
+  const filteredPast = filterEvents(pastEvents);
 
   return (
-    <PageWrapper>
-      <header className="pt-40 pb-20 bg-black text-[#F5F5F5]">
-        <AnimatedText
-          text="High-Octane Events"
-          el="h1"
-          className="text-5xl font-bold text-center"
-          delay={0.5}
-        />
-        <AnimatedText
-          text="Experiences that define brands."
-          el="p"
-          className="text-xl text-neutral-400 text-center mt-4"
-          delay={0.7}
-        />
+    <div className="bg-black text-[#F5F5F5] min-h-screen">
+      {/* HEADER */}
+      <header className="pt-32 pb-16 text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-5xl md:text-6xl font-bold"
+        >
+          Sports & Athletic Events
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-lg text-neutral-400 mt-4"
+        >
+          From marathons to corporate fitness and athletic meets — powered by Crew Commune.
+        </motion.p>
       </header>
 
-      <section
-        ref={targetRef}
-        className="relative bg-[#111111]"
-        style={{ height: sectionHeight }}
-      >
-        <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-          <motion.div style={{ x }} className={`flex w-[${numEvents}00vw]`}>
-            {events.map((event, index) => (
-              <div
-                key={index}
-                className="w-screen h-screen flex items-end overflow-hidden p-8 md:p-16"
-              >
-                <motion.div
-                  className="relative w-full h-full rounded-3xl shadow-2xl overflow-hidden group"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                >
-                  <div className="absolute inset-0 z-0">
-                    <img
-                      src={event.img}
-                      alt={event.title}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
-                      onError={(e) => {
-                        e.target.src =
-                          "https://placehold.co/1920x1080/333333/555555?text=Event+Image";
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/30"></div>
-                  </div>
-
-                  <div className="relative z-10 w-full h-full flex items-end px-4 sm:px-10 lg:px-16 pb-12 text-[#F5F5F5]">
-                    <div className="space-y-4 w-full">
-                      <div className="flex justify-between items-end w-full">
-                        <div className="max-w-[70%]">
-                          <span className="text-lg font-medium text-[#BFFF00] uppercase tracking-widest block">
-                            {event.location}
-                          </span>
-                          <h2 className="text-5xl md:text-8xl font-extrabold leading-none mt-1">
-                            {event.title}
-                          </h2>
-                        </div>
-                        <MagneticButton
-                          strength={30}
-                          className="hidden md:block"
-                        >
-                          {/* FEEDBACK #4: Made CTA functional */}
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="px-6 py-3 text-lg font-semibold bg-[#BFFF00] text-black rounded-full shadow-lg"
-                            data-cursor-hover="link"
-                            onClick={() => setPage("contact")}
-                          >
-                            View Case Study
-                          </motion.button>
-                        </MagneticButton>
-                      </div>
-                      <p className="text-xl text-neutral-300 max-w-3xl pt-2">
-                        <span className="font-semibold text-[#BFFF00] mr-2">
-                          Date: {event.date}
-                        </span>
-                        {event.desc}
-                      </p>
-                      <MagneticButton strength={25} className="mt-4 md:hidden">
-                        {/* FEEDBACK #4: Made CTA functional */}
-                        <button
-                          className="px-6 py-2 text-md font-semibold bg-[#BFFF00] text-black rounded-full flex items-center"
-                          data-cursor-hover="link"
-                          onClick={() => setPage("contact")}
-                        >
-                          View Case Study{" "}
-                          <ArrowRight size={20} className="ml-2" />
-                        </button>
-                      </MagneticButton>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section after events */}
-      <section className="py-20 bg-black text-[#F5F5F5] text-center">
-        <AnimatedText
-          text="Ready for your next high-impact event?"
-          el="h2"
-          className="text-4xl font-bold mb-8"
-        />
-        <MagneticButton strength={25}>
-          {/* FEEDBACK #4: Made CTA functional */}
+      {/* FILTER BUTTONS */}
+      <div className="flex flex-wrap justify-center gap-3 pb-10">
+        {categories.map((cat) => (
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            key={cat}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 text-lg font-semibold bg-[#BFFF00] text-black rounded-full"
-            data-cursor-hover="link"
-            onClick={() => setPage("contact")}
+            onClick={() => setActiveCategory(cat)}
+            className={`px-6 py-2 rounded-full border transition-all duration-300 ${
+              activeCategory === cat
+                ? "bg-[#BFFF00] text-black border-[#BFFF00]"
+                : "border-neutral-600 hover:border-[#BFFF00]"
+            }`}
           >
-            Start Planning Now
+            {cat}
           </motion.button>
-        </MagneticButton>
+        ))}
+      </div>
+
+      {/* ============================
+          UPCOMING EVENTS SECTION
+      ============================ */}
+      <section className="px-6 md:px-16 py-10">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl font-bold mb-8 text-[#BFFF00] text-center"
+        >
+          Upcoming Events
+        </motion.h2>
+
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence>
+            {filteredUpcoming.map((event, index) => (
+              <EventCard
+                key={event.title}
+                event={event}
+                index={index}
+                onSelect={() => setSelectedEvent(event)}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </section>
-    </PageWrapper>
+
+      {/* ============================
+          PAST EVENTS SECTION
+      ============================ */}
+      <section className="px-6 md:px-16 py-10 border-t border-neutral-800">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl font-bold mb-8 text-[#BFFF00] text-center"
+        >
+          Past Events
+        </motion.h2>
+
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence>
+            {filteredPast.map((event, index) => (
+              <EventCard
+                key={event.title}
+                event={event}
+                index={index}
+                onSelect={() => setSelectedEvent(event)}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </section>
+
+      {/* MODAL */}
+      <AnimatePresence>
+        {selectedEvent && (
+          <motion.div
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex justify-center items-center z-50 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-[#111] rounded-3xl overflow-hidden max-w-3xl w-full shadow-2xl relative"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="absolute top-4 right-4 text-[#BFFF00] hover:text-white"
+              >
+                <X size={28} />
+              </button>
+              <img
+                src={selectedEvent.img}
+                alt={selectedEvent.title}
+                className="w-full h-72 object-cover"
+              />
+              <div className="p-6 space-y-4">
+                <h2 className="text-3xl font-bold">{selectedEvent.title}</h2>
+                <p className="text-[#BFFF00] font-medium">
+                  {selectedEvent.location} • {selectedEvent.date}
+                </p>
+                <p className="text-neutral-300">{selectedEvent.desc}</p>
+
+                {/* ✅ Button Changes for Upcoming / Past */}
+                {upcomingEvents.some((e) => e.title === selectedEvent.title) ? (
+                  <motion.a
+                    href={selectedEvent.registerLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-block px-6 py-3 bg-[#BFFF00] text-black font-semibold rounded-full"
+                  >
+                    Register Now <ArrowRight className="inline ml-2" />
+                  </motion.a>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-3 bg-[#BFFF00] text-black font-semibold rounded-full"
+                    onClick={() => {
+                      setPage("contact");
+                      setSelectedEvent(null);
+                    }}
+                  >
+                    View Case Study <ArrowRight className="inline ml-2" />
+                  </motion.button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* CTA SECTION */}
+      <section className="py-20 text-center border-t border-neutral-800">
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl font-bold mb-8"
+        >
+          Ready to plan your next major event?
+        </motion.h2>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-8 py-3 text-lg font-semibold bg-[#BFFF00] text-black rounded-full"
+          onClick={() => setPage("contact")}
+        >
+          Start Planning Now
+        </motion.button>
+      </section>
+    </div>
   );
 };
+
+// Reusable Event Card Component
+const EventCard = ({ event, index, onSelect }) => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0 }}
+    transition={{ delay: index * 0.03 }}
+    className="relative rounded-2xl overflow-hidden group cursor-pointer"
+    onClick={onSelect}
+  >
+    <img
+      src={event.img}
+      alt={event.title}
+      className="w-full h-72 object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+      onError={(e) =>
+        (e.target.src =
+          "https://placehold.co/600x400/333333/777777?text=Event+Image")
+      }
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20 opacity-90 group-hover:opacity-100 transition-all"></div>
+    <div className="absolute bottom-4 left-4">
+      <h2 className="text-2xl font-bold">{event.title}</h2>
+      <p className="text-sm text-[#BFFF00] mt-1">{event.location}</p>
+    </div>
+  </motion.div>
+);
 
 /**
  * 8. Contact Page
@@ -2166,6 +2488,173 @@ const CustomCursor = () => {
   );
 };
 
+// --- NEW: CircularText Component and Helpers ---
+
+/**
+ * NEW: Styles for the CircularText component.
+ * This component injects a <style> tag into the document head.
+ */
+const CircularTextStyles = () => (
+  <style>{`
+    .circular-text {
+      margin: 0 auto;
+      border-radius: 50%;
+      width: 120px; /* Base size */
+      height: 120px; /* Base size */
+      position: relative;
+      cursor: pointer;
+      transform-origin: 50% 50%;
+      -webkit-transform-origin: 50% 50%;
+    }
+
+    /* This 'p' tag is the container for the letters */
+    .circular-text p {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* The individual <span> styles (the letters) 
+      are applied inline in the React component 
+      for dynamic rotation. Tailwind classes on the
+      component (like text-xs) will be inherited.
+    */
+  `}</style>
+);
+
+// Helper functions for CircularText
+const getRotationTransition = (duration, from, loop = true) => ({
+  from,
+  to: from + 360,
+  ease: "linear",
+  duration,
+  type: "tween",
+  repeat: loop ? Infinity : 0,
+});
+
+const getTransition = (duration, from) => ({
+  rotate: getRotationTransition(duration, from),
+  scale: {
+    type: "spring",
+    damping: 20,
+    stiffness: 300,
+  },
+});
+
+/**
+ * NEW: CircularText Component (Fixed & Integrated)
+ */
+const CircularText = ({
+  text,
+  spinDuration = 20,
+  onHover = "speedUp",
+  className = "",
+}) => {
+  const letters = Array.from(text);
+  const controls = useAnimation();
+  const rotation = useMotionValue(0);
+
+  useEffect(() => {
+    const start = rotation.get();
+    controls.start({
+      rotate: start + 360,
+      scale: 1,
+      transition: getTransition(spinDuration, start),
+    });
+  }, [spinDuration, text, onHover, controls, rotation]);
+
+  const handleHoverStart = () => {
+    const start = rotation.get();
+    if (!onHover) return;
+
+    let transitionConfig;
+    let scaleVal = 1;
+
+    switch (onHover) {
+      case "slowDown":
+        transitionConfig = getTransition(spinDuration * 2, start);
+        break;
+      case "speedUp":
+        transitionConfig = getTransition(spinDuration / 4, start);
+        break;
+      case "pause":
+        transitionConfig = {
+          rotate: { type: "spring", damping: 20, stiffness: 300 },
+          scale: { type: "spring", damping: 20, stiffness: 300 },
+        };
+        scaleVal = 1;
+        break;
+      case "goBonkers":
+        transitionConfig = getTransition(spinDuration / 20, start);
+        scaleVal = 0.8;
+        break;
+      default:
+        transitionConfig = getTransition(spinDuration, start);
+    }
+
+    controls.start({
+      rotate: start + 360,
+      scale: scaleVal,
+      transition: transitionConfig,
+    });
+  };
+
+  const handleHoverEnd = () => {
+    const start = rotation.get();
+    controls.start({
+      rotate: start + 360,
+      scale: 1,
+      transition: getTransition(spinDuration, start),
+    });
+  };
+
+  // This is the radius (half the width/height from CSS)
+  const radius = 60; // 60px is half of 120px width
+
+  return (
+    <motion.div
+      className={`circular-text ${className}`} // Tailwind classes are passed here
+      style={{ rotate: rotation }}
+      initial={{ rotate: 0 }}
+      animate={controls}
+      onMouseEnter={handleHoverStart}
+      onMouseLeave={handleHoverEnd}
+    >
+      {/* This 'p' tag is the container for the letters */}
+      <p>
+        {letters.map((letter, i) => {
+          const rotationDeg = (i / letters.length) * 360;
+
+          return (
+            <span
+              key={i}
+              style={{
+                // Position the letter at the top-center
+                position: "absolute",
+                left: "50%",
+                top: "0",
+                height: `${radius}px`, // height is the radius
+                transformOrigin: "bottom center", // Rotate from the center of the circle
+                transform: `translateX(-50%) rotate(${rotationDeg}deg)`,
+                WebkitTransform: `translateX(-50%) rotate(${rotationDeg}deg)`,
+                display: "inline-block", // Make span respect transform
+              }}
+            >
+              {letter}
+            </span>
+          );
+        })}
+      </p>
+    </motion.div>
+  );
+};
+
+// --- END NEW CircularText ---
+
 /**
  * Main App Component
  */
@@ -2206,6 +2695,7 @@ function App() {
 
   return (
     <React.Fragment>
+      <CircularTextStyles /> {/* NEW: Inject styles for circular text */}
       <CustomCursor />
       <div className="bg-[#111111] font-sans antialiased scroll-smooth text-[#F5F5F5]">
         <AnimatePresence>
