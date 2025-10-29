@@ -1043,31 +1043,31 @@ const Footer = ({ setPage }) => {
  * 4. Home Page (UPDATED with Centered Services & new CTA)
  */
 const HomePage = ({ setPage }) => {
-  // Services array (UPDATED: "Athlete Management" removed)
+  // Services array (UPDATED with new list)
   const services = [
     {
-      title: "Sports Event Management",
-      icon: Medal,
-      desc: "From planning to execution, we deliver memorable, high-octane events.",
-      img: "ser2.jpg", // <-- REPLACE
+      title: "Sports & Corporate Event Management",
+      icon: Medal, // Merging 'Medal' and 'Award'
+      desc: "From grand-scale sports events to internal corporate tournaments, we manage it all.",
+      img: "ser2.jpg", // Re-using existing image
     },
     {
-      title: "Media Management",
-      icon: Users,
-      desc: "Elevating your online presence with tailored strategies, creative content, and analytics.",
-      img: "./ser3.jpeg", // <-- REPLACE
+      title: "Event Productions and Branding",
+      icon: Clapperboard, // Using 'Clapperboard' for "Productions"
+      desc: "Full-scale event production, from stage design to live broadcasting and branding.",
+      img: "./coorporateevents.jpg", // Re-using image
     },
     {
-      title: "Design Services",
-      icon: Globe,
+      title: "Sports & Corporate Merchandise",
+      icon: Globe, // Kept from "Design Services"
       desc: "Custom apparel and merchandise that connects your brand with your community.",
-      img: "./merchandise.webp", // <-- REPLACE
+      img: "./merchandise.webp", // Re-using existing image
     },
     {
-      title: "Corporate Sports Events",
-      icon: Award,
-      desc: "Boost team morale and brand visibility with professionally managed corporate sports.",
-      img: "./coorporateevents.jpg", // <-- REPLACE
+      title: "PR & Media Management",
+      icon: Users, // Kept from "Media Management"
+      desc: "Elevating your brand's voice with strategic PR and impactful media campaigns.",
+      img: "./ser3.jpeg", // Re-using existing image
     },
   ];
 
@@ -1243,9 +1243,9 @@ const HomePage = ({ setPage }) => {
         </motion.div>
       </motion.section>
 
-      {/* Marquee Section (UPDATED to remove Athlete Management) */}
+      {/* Marquee Section (UPDATED to new services) */}
       <Marquee
-        text="Corporate Sports Events • Media Management • Sports Event Management • Design Services •"
+        text="Sports & Corporate Event Management • Event Productions and Branding • Sports & Corporate Merchandise • PR & Media Management •"
         speed={40}
       />
 
@@ -1439,7 +1439,7 @@ const HomePage = ({ setPage }) => {
 
       {/* Founder CTA (COMMENTED OUT) */}
       {/* <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
-  ...
+   ...
       </section> */}
     </PageWrapper>
   );
@@ -1739,39 +1739,32 @@ DEFINED BY RESULTS."
 // FEEDBACK #4: Added `setPage` prop
 const ServicesPage = ({ setPage }) => {
   // FEEDBACK #1: Replace these image URLs
-  // FEEDBACK #7: Added "Corporate Sports Events"
+  // UPDATED: New service list
   const services = [
     {
-      title: "Sports Event Management",
-      desc: "Bring your vision to life with our cutting-edge event solutions. From planning to execution, we deliver memorable sports events that inspire and engage. We handle conceptualization, venue selection, sponsorship management, and flawless on-ground execution.",
-      icon: Medal,
-      img: "./sports.jpeg", // <-- REPLACE
-    },
-    // {
-    //   title: "Athlete Management",
-    //   desc: "We’re more than just managers – we’re partners in your journey to success. Our personalized approach helps athletes unlock their full potential. Services include talent scouting, brand partnerships, contract negotiations, and long-term career development.",
-    //   icon: Briefcase,
-    //   img: "./athlete.png", // <-- REPLACE
-    // },
-     {
-      title: "Corporate Sports Events",
-      desc: "Boost team morale and brand visibility with our professionally managed corporate sports days, tournaments, and wellness programs. We handle everything from venue booking to activity planning for a seamless, engaging employee experience.",
-      icon: Award,
-      img: "./coorporateevents.jpg", // <-- REPLACE (Add this new image)
+      title: "Sports & Corporate Event Management",
+      desc: "At Crew Commune, we specialize in delivering end-to-end event management solutions — from creative conceptualization to flawless execution. With a proven track record across sporting, corporate, and political events, our team combines innovation, precision, and professionalism to craft experiences that inspire and engage.Whether it’s a high-energy marathon, a dynamic corporate conference, or a large-scale public gathering, we ensure every detail is planned to perfection — from strategy and logistics to production and on-ground management.Driven by passion and guided by expertise, we don’t just organize events — we create impactful moments that leave lasting impressions.",
+      icon: Medal, // Using 'Medal' as the primary
+      img: "./sports.jpeg", // Re-using
     },
     {
-      title: "Media Management",
-      desc: "Elevate your online presence with our expert strategies tailored to your brand. From content creation to analytics, we ensure your audience stays engaged and your brand stays ahead of the curve. This includes platform optimization, creative content, and paid campaigns.",
-      icon: Users,
-      img: "./media.jpg", // <-- REPLACE
+      title: "Event Productions and Branding",
+      desc: "We bring ideas to life through powerful event production and branding solutions. From stage design, lighting, and sound to creative installations and digital media — every element is crafted to reflect your brand’s identity and purpose. Our team ensures seamless execution, delivering visually striking, high-impact experiences that capture attention and elevate your event’s presence. Whether it’s a corporate celebration, sporting event, or public campaign, we make your brand stand out where it matters most.",
+      icon: Clapperboard, // Using 'Clapperboard' for "Productions"
+      img: "./coorporateevents.jpg", // Re-using
     },
     {
-      title: "Merchandise & Design Services",
-      desc: "From trendy apparel to exclusive memorabilia, our merchandise is designed to capture the essence of every event and brand. We offer custom design, online & on-site sales management, and full branding & packaging solutions.",
-      icon: Globe,
-      img: "./merchandise.webp", // <-- REPLACE
+      title: "Sports & Corporate Merchandise",
+      desc: "We specialize in the manufacturing and customization of premium sports and corporate merchandise. From performance wear and event accessories to branded gifts and promotional items, we create products that seamlessly combine quality, functionality, and style. With in-house design and production capabilities, we ensure every item reflects your brand’s identity — making it perfect for marathons, corporate events, team gear, and promotional campaigns.",
+      icon: Globe, // Re-using
+      img: "./merchandise.webp", // Re-using
     },
-   
+    {
+      title: "PR & Media Management",
+      desc: "At Crew Commune, we specialize in strategic PR and media management for events and athletes, ensuring maximum visibility and impactful storytelling. From press coverage and social media campaigns to influencer collaborations and media relations, we craft narratives that build strong public presence and lasting brand value.Our experienced team manages every communication touchpoint — before, during, and after the event — to deliver the right message to the right audience at the right time.",
+      icon: Users, // Re-using
+      img: "./media.jpg", // Re-using
+    },
   ];
 
   const differentiators = [
@@ -1801,11 +1794,12 @@ const ServicesPage = ({ setPage }) => {
     },
   ];
 
+  // UPDATED: FAQs updated to reflect new services
   const faqs = [
     {
       question: "What is Crew Commune's core area of expertise?",
       answer:
-        "We are a powerhouse that merges the dynamic worlds of sports, branding, and community building. Our core expertise lies in Media Management, Sports Event Management, and Athlete Management, focusing on creating authentic and lasting impact.",
+        "We are a powerhouse that merges the dynamic worlds of sports, branding, and community building. Our core expertise lies in Sports & Corporate Event Management, Event Productions and Branding, Sports & Corporate Merchandise, and PR & Media Management.",
     },
     {
       question: "How do you measure the success of an event or campaign?",
@@ -1818,9 +1812,9 @@ const ServicesPage = ({ setPage }) => {
         "We partner with ambitious brands and individuals who want to build a lasting legacy. Our expertise is particularly strong in sports, entertainment, and lifestyle, but our principles of building authentic culture apply to any industry.",
     },
     {
-      question: "What's the difference between Sports and Corporate Events?",
+      question: "What does 'Sports & Corporate Event Management' include?",
       answer:
-        "Our 'Sports Event Management' focuses on large-scale, public-facing events like marathons or tournaments. 'Corporate Sports Events' are private, internal-facing events designed for companies to boost employee engagement, team building, and brand morale.",
+        "This combined service covers the full spectrum of event planning. For sports, this means large-scale, public-facing events like marathons. For corporate, it includes private, internal-facing events like wellness programs, tournaments, and team-building days, all managed by one expert team.",
     },
   ];
 
@@ -2559,10 +2553,10 @@ const CircularTextStyles = () => (
     }
 
     /* The individual <span> styles (the letters) 
-      are applied inline in the React component 
-      for dynamic rotation. Tailwind classes on the
-      component (like text-xs) will be inherited.
-    */
+       are applied inline in the React component 
+       for dynamic rotation. Tailwind classes on the
+       component (like text-xs) will be inherited.
+     */
   `}</style>
 );
 
