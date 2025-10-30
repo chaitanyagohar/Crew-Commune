@@ -489,8 +489,8 @@ const heroImages = [
     rotate: -15, // Initial rotation
   },
   {
-    src: "./basket.webp", // <-- REPLACE
-    alt: "Basketball court branding",
+    src: "./chess.jpg", // <-- REPLACE
+    alt: "chess ",
     width: "300px",
     height: "200px",
     xOffset: 150,
@@ -498,8 +498,8 @@ const heroImages = [
     rotate: 10,
   },
   {
-    src: "./merchhero.jpeg", // <-- REPLACE
-    alt: "Merchandise design",
+    src: "./marathon.png", // <-- REPLACE
+    alt: "Marathon",
     width: "200px",
     height: "280px",
     xOffset: -250,
@@ -507,8 +507,8 @@ const heroImages = [
     rotate: 5,
   },
   {
-    src: "./tennis.png", // <-- REPLACE
-    alt: "tennis",
+    src: "./badminton.jpg", // <-- REPLACE
+    alt: "badminton",
     width: "350px",
     height: "300px",
     xOffset: 300,
@@ -516,7 +516,7 @@ const heroImages = [
     rotate: -8,
   },
   {
-    src: "./Usain-Bolt.jpg", // <-- REPLACE
+    src: "./pickelball2.webp", // <-- REPLACE
     alt: "Crowd at a live event",
     width: "350px",
     height: "250px",
@@ -525,7 +525,7 @@ const heroImages = [
     rotate: 12,
   },
   {
-    src: "./volley.png", // <-- REPLACE
+    src: "./trialthon.jpg", // <-- REPLACE
     alt: "Branded running shoes",
     width: "250px",
     height: "280px",
@@ -1353,7 +1353,7 @@ const HomePage = ({ setPage }) => {
             viewport={{ once: true, amount: 0.3 }}
           >
             <ParallaxImage
-              src="./athlete-home.jpg" // <-- REPLACE
+              src="./marathon3.jpeg" // <-- REPLACE
               alt="Athlete running"
               className="h-full"
             />
