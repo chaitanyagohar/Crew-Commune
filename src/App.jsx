@@ -680,7 +680,7 @@ const LoadingScreen = () => {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/crewload.mp4" type="video/mp4" />
+        <source src="/crewload2.mp4" type="video/mp4" />
       </video>
 
       {/* Solid Green Overlay (70% opacity) */}
@@ -747,19 +747,25 @@ const Header = ({ setPage }) => {
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
           <MagneticButton strength={40}>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              onClick={() => handleNavClick("home")}
-              className="text-2xl font-bold text-[#F5F5F5] cursor-pointer"
-              data-cursor-hover="link"
-            >
-              CREW COMMUNE
-            </motion.div>
-          </MagneticButton>
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, delay: 0.5 }}
+    onClick={() => handleNavClick("home")}
+    // Added white background, padding, and rounded corners
+    className="cursor-pointer bg-white px-2 py-1 rounded-md"
+    data-cursor-hover="link"
+  >
+    <img
+      src="/logo2.png" // <-- **** IMPORTANT: Replace with the ACTUAL path to your logo file ****
+      alt="Crew Commune Logo"
+      // Adjusted height (h-10 is often a good starting point for wider logos)
+      // Added 'block' to prevent extra space
+      className="h-10 w-auto block"
+    />
+  </motion.div>
+</MagneticButton>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-1">
@@ -890,9 +896,13 @@ const Footer = ({ setPage }) => {
     <footer className="bg-[#111111] text-neutral-400 py-16 border-t border-neutral-800">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
         <div className="col-span-2 lg:col-span-1">
-          <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4">
-            CREW COMMUNE
-          </h3>
+        <img
+      src="/logo2.png" // <-- **** IMPORTANT: Replace with the ACTUAL path to your logo file ****
+      alt="Crew Commune Logo"
+      // Adjusted height (h-10 is often a good starting point for wider logos)
+      // Added 'block' to prevent extra space
+      className="h-10 w-auto block"
+    />
           <p className="text-sm mb-4">
             Innovating Success. Empowering Athletes.
           </p>
@@ -1038,8 +1048,7 @@ const Footer = ({ setPage }) => {
       </div>
     </footer>
   );
-};
-/**
+};/**
  * 4. Home Page (UPDATED with Centered Services & new CTA)
  */
 const HomePage = ({ setPage }) => {
@@ -1074,12 +1083,39 @@ const HomePage = ({ setPage }) => {
   // Use all 6 images for the slideshow
   const mobileSlideshowImages = [
     heroImages[0], // cricket
-    heroImages[1], // basket
-    heroImages[2], // merch
-    heroImages[3], // tennis
-    heroImages[4], // Usain-Bolt
-    heroImages[5], // volley
+    heroImages[1], // chess
+    heroImages[2], // marathon
+    heroImages[3], // badminton
+    heroImages[4], // pickelball
+    heroImages[5], // trialthon
   ];
+
+  // --- NEW: Hero Background Slideshow Logic ---
+  const heroSlideshowImages = [
+    "/v1.jpg", // Make sure to use the correct extension (e.g., .jpg, .png, .webp)
+    "/v2.jpg",
+    "/v3.jpeg",
+    "/v4.jpeg",
+    "/v5.avif",
+    "/v6.avif",
+    "/v7.webp",
+    "/v8.webp",
+    "/v9.webp",
+    "/v10.webp",
+  ];
+
+  const [heroBgIndex, setHeroBgIndex] = useState(0);
+
+  useEffect(() => {
+    // This interval changes the image every 2.5 seconds
+    const interval = setInterval(() => {
+      setHeroBgIndex(
+        (prevIndex) => (prevIndex + 1) % heroSlideshowImages.length
+      );
+    }, 2500); // 2500ms = 2.5 seconds
+
+    return () => clearInterval(interval); // Cleans up the interval when the component unmounts
+  }, [heroSlideshowImages.length]); // Added dependency
 
   // --- NEW ANIMATION VARIANTS FOR VIDEO EFFECT (Corrected Timing) ---
   const mobileHeroContainerVariants = {
@@ -1140,10 +1176,10 @@ const HomePage = ({ setPage }) => {
         animate="animate"
         className="relative h-[100vh] flex items-center justify-center text-center overflow-hidden bg-black"
       >
-        {/* Layer 1: Background Video (z-0) */}
+        {/* Layer 1: Background Slideshow (z-0) */}
         <motion.div
           className="absolute inset-0 z-0 opacity-30"
-          initial={{ scale: 1.1 }}
+          initial={{ scale: 1.1 }} // This keeps the slow "Ken Burns" zoom effect
           animate={{ scale: 1 }}
           transition={{
             duration: 10,
@@ -1152,14 +1188,22 @@ const HomePage = ({ setPage }) => {
             repeatType: "mirror",
           }}
         >
-          <video
-            autoPlay
-            muted
-            loop
-            className="w-full h-full object-cover"
-            src="./crewhero.mp4"
-            poster="https://images.unsplash.com/photo-1506146332389-18140e7f702d?w=800&auto-format&fit=crop&q=60"
-          />
+          <AnimatePresence>
+            <motion.img
+              key={heroBgIndex} // This tells AnimatePresence to change the component
+              src={heroSlideshowImages[heroBgIndex]}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.0, ease: "easeInOut" }} // 1-second cross-fade
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback in case an image fails to load
+                e.target.src =
+                  "https://placehold.co/1920x1080/333333/555555?text=Image+Missing";
+              }}
+            />
+          </AnimatePresence>
         </motion.div>
 
         {/* Layer 2: Desktop Image Followers (z-auto) */}
@@ -1217,7 +1261,7 @@ const HomePage = ({ setPage }) => {
             {/* "SUCCESS." text line, starts centered */}
             <motion.span
               variants={textSuccessVariants}
-              className="block text-6xl font-extrabold text-[#BFFF00] absolute z-20"
+              className="block text-6xl font-extrabold text-[#BFFF0Next] absolute z-20"
             >
               SUCCESS.
             </motion.span>
@@ -1439,7 +1483,7 @@ const HomePage = ({ setPage }) => {
 
       {/* Founder CTA (COMMENTED OUT) */}
       {/* <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
-   ...
+     ...
       </section> */}
     </PageWrapper>
   );
