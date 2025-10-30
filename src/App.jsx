@@ -1607,7 +1607,7 @@ const AboutPage = () => {
         >
           {/* FEEDBACK #1: Replace this image */}
           <ParallaxImage
-            src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" // <-- REPLACE
+            src="delhimarathon.avif" // <-- REPLACE
             alt="Founder portrait"
           />
           <div className="absolute inset-0 bg-black/80"></div>
@@ -1672,7 +1672,7 @@ DEFINED BY RESULTS."
               just execute; we partner, strategize, and deliver.
             </p>
             <p className="font-semibold text-[#F5F5F5]">
-              - Alex Johnson, Founder
+              - Yash Raikar, Founder
               {/* FEEDBACK #1: Replaced placeholder name */}
             </p>
           </motion.div>
@@ -1737,7 +1737,7 @@ DEFINED BY RESULTS."
       </section>
 
       {/* Meet The Team Section */}
-      <section className="py-20 md:py-32 bg-black text-[#F5F5F5]">
+      {/* <section className="py-20 md:py-32 bg-black text-[#F5F5F5]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedText
             text="Meet The Crew"
@@ -1772,7 +1772,7 @@ DEFINED BY RESULTS."
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </PageWrapper>
   );
 };
