@@ -2119,7 +2119,7 @@ const ContactPage = () => (
           <div className="grid sm:grid-cols-2 gap-6">
             <div>
               <p className="text-lg text-[#c60000] font-semibold mb-1">Email</p>
-              <p className="text-neutral-600">raikars.yash@gmail.com</p>
+              <p className="text-neutral-600"> Team@crewcommune.com</p>
             </div>
             <div>
               <p className="text-lg text-[#c60000] font-semibold mb-1">Phone</p>
