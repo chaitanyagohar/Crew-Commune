@@ -29,6 +29,12 @@ import {
   Phone,
   Mail,
   Shirt,
+  // ✅ Add these new icons here:
+  Map,
+  ShieldCheck,
+  Trophy,
+  Leaf,
+  Activity,
 } from "lucide-react";
 
 /*
@@ -721,7 +727,7 @@ const Marquee = ({ text, speed = 20 }) => {
   const x = useTransform(scrollY, [0, 1000], ["0%", "-10%"], { clamp: false });
 
   return (
-    <div className="relative w-full h-24 md:h-32 overflow-hidden bg-[#c60000] text-white border-y-2 border-white">
+    <div className="relative w-full h-24 md:h-32 overflow-hidden bg-[#850101] text-white border-y-2 border-white ">
       <motion.div
         className="absolute top-0 left-0 w-full h-full flex items-center"
         style={{ x }}
@@ -900,7 +906,7 @@ const HomePage = ({ setPage }) => {
       <AnimatedText
         text="SUCCESS."
         el="span"
-        className="block text-[#c60000] text-6xl sm:text-8xl font-extrabold"
+        className="block text-6xl sm:text-8xl font-extrabold bg-gradient-to-r from-[#c60000] via-neutral-800 to-[#c60000] bg-clip-text text-transparent"
         delay={1.2}
       />
     </div>
@@ -931,7 +937,7 @@ const HomePage = ({ setPage }) => {
             opacity: 1,
             transition: { duration: 0.8, ease: "easeOut", delay: 0.7 },
           }}
-          className="block text-6xl font-extrabold text-[#c60000] tracking-tighter leading-none"
+          className="block text-6xl font-extrabold bg-gradient-to-r from-[#c60000] via-neutral-800 to-[#c60000] bg-clip-text text-transparent tracking-tighter leading-none"
         >
           SUCCESS.
         </motion.span>
@@ -970,12 +976,12 @@ const HomePage = ({ setPage }) => {
   </motion.div>
 </motion.section>
 
-      {/* Marquee */}
+      {/* Marquee - UPDATED TEXT HERE */}
       <Marquee
-        text="Sports & Corporate Event Management • Event Productions and Branding • Sports & Corporate Merchandise • PR & Media Management •"
-        speed={80}
+        text="“Don’t think about the start of the race, think about the ending.” — Usain Bolt • "
+        speed={60}
       />
-{/* ===== NEW SLOGAN SECTION ===== */} <section className="relative bg-white py-36 text-center overflow-hidden border-t border-neutral-100"> {/* Background glow */} <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.06)_0%,transparent_70%)]"></div> {/* Content */} <motion.div variants={scrollRevealVariants} initial="initial" whileInView="whileInView" viewport={{ once: true, amount: 0.3 }} className="relative z-10 max-w-5xl mx-auto px-6" > <h2 className="text-4xl md:text-6xl font-extrabold leading-tight text-black"> <span className="bg-gradient-to-r from-[#c60000] via-neutral-600 to-[#c60000] bg-clip-text text-transparent"> Empowering Sports, </span>{" "} <br className="hidden sm:block" /> <span className="text-neutral-500">Enriching Communities.</span> </h2> <div className="h-[2px] w-24 bg-gradient-to-r from-[#c60000] to-transparent mx-auto my-8"></div> <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"> Driving growth, unity, and progress through powerful sporting experiences and meaningful community connections. </p> </motion.div> </section>
+{/* ===== NEW SLOGAN SECTION ===== */} <section className="relative bg-white py-16 text-center overflow-hidden border-t border-neutral-100"> {/* Background glow */} <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.06)_0%,transparent_70%)]"></div> {/* Content */} <motion.div variants={scrollRevealVariants} initial="initial" whileInView="whileInView" viewport={{ once: true, amount: 0.3 }} className="relative z-10 max-w-5xl mx-auto px-6" > <h2 className="text-4xl md:text-6xl font-extrabold leading-tight text-black"> <span className="bg-gradient-to-r from-[#c60000] via-neutral-600 to-[#c60000] bg-clip-text text-transparent"> Empowering Sports, </span>{" "} <br className="hidden sm:block" /> <span className="text-neutral-500">Enriching Communities.</span> </h2> <div className="h-[2px] w-24 bg-gradient-to-r from-[#c60000] to-transparent mx-auto my-8"></div> <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"> Driving growth, unity, and progress through powerful sporting experiences and meaningful community connections. </p> </motion.div> </section>
 
       {/* Our Core Expertise – BENTO GRID */}
       <section className="py-20 md:py-32 bg-neutral-50 text-black">
@@ -1182,6 +1188,9 @@ const ServiceTile = ({ service, onClick, className = "" }) => (
 /**
  * 6. About Page (Founder's Story)
  */
+/**
+ * 6. About Page (Founder's Story & Why Choose Us)
+ */
 const AboutPage = () => {
   const values = [
     {
@@ -1229,6 +1238,50 @@ const AboutPage = () => {
     },
   ];
 
+  // ✅ REPHRASED CONTENT SECTION
+  const whyChoose = [
+    {
+      title: "Precision-Planned Events",
+      desc: "From the starting gun to the finish line, we deliver seamless execution and professional-grade timing for a flawless race day.",
+      icon: Medal,
+    },
+    {
+      title: "A Thriving Sports Family",
+      desc: "We don't just run events; we build inclusive communities where athletes, families, and fans connect and celebrate together.",
+      icon: Users,
+    },
+    {
+      title: "Iconic & Curated Routes",
+      desc: "We scout the best paths—combining scenic beauty with the right level of challenge to make every kilometer memorable.",
+      icon: Map,
+    },
+    {
+      title: "Safety First, Always",
+      desc: "Top-tier medical support, hydration stations, and marshals ensure every participant competes with confidence.",
+      icon: ShieldCheck,
+    },
+    {
+      title: "Rewards That Matter",
+      desc: "Premium finisher medals, high-quality custom merchandise, and certificates that athletes are proud to display.",
+      icon: Trophy,
+    },
+    {
+      title: "For Champions & Beginners",
+      desc: "Whether you're chasing a podium finish or your first 5K, we have inclusive categories that welcome every fitness level.",
+      icon: Activity,
+    },
+    {
+      title: "Running with Purpose",
+      desc: "Every stride counts. We champion eco-friendly practices and support social causes to leave a positive footprint.",
+      icon: Leaf,
+    },
+    {
+      title: "Complete Peace of Mind",
+      desc: "We handle the heavy lifting—logistics, permissions, and production—so you can simply focus on the experience.",
+      icon: Briefcase,
+    },
+  ];
+
   return (
     <PageWrapper>
       {/* ===== HERO ===== */}
@@ -1237,7 +1290,7 @@ const AboutPage = () => {
           className="absolute inset-0 bg-black z-0 overflow-hidden"
           data-cursor-hover="image"
         >
-          <ParallaxImage src="delhimarathon.avif" alt="Founder portrait" />
+          <ParallaxImage src="abouthero.jpg" alt="Founder portrait" />
           <div className="absolute inset-0 bg-black/60"></div>
         </div>
 
@@ -1294,10 +1347,48 @@ DEFINED BY RESULTS."
         </div>
       </section>
 
+      {/* ===== WHY CHOOSE CREW COMMUNE (NEW SECTION) ===== */}
+      <section className="py-20 bg-neutral-50 border-y border-neutral-200">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <AnimatedText
+              text="Why Choose Crew Commune?"
+              el="h2"
+              className="text-3xl md:text-5xl font-extrabold text-black mb-4"
+            />
+            <div className="h-1 w-20 bg-[#c60000] mx-auto rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {whyChoose.map((item, index) => (
+              <motion.div
+                key={index}
+                variants={scrollRevealVariants}
+                initial="initial"
+                whileInView="whileInView"
+                viewport={{ once: true, amount: 0.2 }}
+                whileHover={{ y: -5 }}
+                className="bg-white p-8 rounded-xl shadow-sm border border-neutral-200 hover:shadow-md hover:border-[#c60000]/30 transition-all duration-300 text-center flex flex-col items-center h-full"
+              >
+                <div className="w-16 h-16 bg-[#c60000] rounded-full flex items-center justify-center mb-6 text-white shadow-lg shadow-red-100">
+                  <item.icon size={32} />
+                </div>
+                <h3 className="text-lg font-bold text-black mb-3 leading-tight">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-neutral-600 leading-relaxed">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== WHAT SETS US APART ===== */}
-      <section className="relative py-28 bg-neutral-50 text-black overflow-hidden border-t border-neutral-200">
+      <section className="relative py-28 bg-white text-black overflow-hidden border-b border-neutral-200">
         {/* Subtle gradient glow background */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.06)_0%,transparent_70%)] blur-3xl"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.03)_0%,transparent_70%)] blur-3xl"></div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <AnimatedText
@@ -1318,13 +1409,10 @@ DEFINED BY RESULTS."
                 initial="initial"
                 whileInView="whileInView"
                 viewport={{ once: true, amount: 0.3 }}
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.5 }}
-                className="relative bg-white border border-neutral-200 rounded-3xl p-8 overflow-hidden group hover:border-[#c60000]/60 hover:shadow-[0_0_25px_rgba(198,0,0,0.15)] transition-all duration-500"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                className="relative bg-white border border-neutral-200 rounded-3xl p-8 overflow-hidden group hover:border-[#c60000]/40 hover:shadow-lg transition-all duration-300"
               >
-                {/* Soft glow ring */}
-                <div className="absolute -top-10 -right-10 w-36 h-36 bg-[#c60000]/10 blur-3xl rounded-full group-hover:opacity-100 opacity-0 transition-all"></div>
-
                 <item.icon className="w-10 h-10 text-[#c60000] mb-4 relative z-10" />
                 <h3 className="text-2xl font-bold mb-3 relative z-10 text-black">
                   {item.title}
@@ -1360,14 +1448,14 @@ DEFINED BY RESULTS."
             {values.map((item, index) => (
               <motion.div
                 key={index}
-                className="bg-neutral-50 border border-neutral-200 p-8 rounded-2xl text-center hover:border-[#c60000]/40 transition-all duration-500"
+                className="bg-neutral-50 border border-neutral-200 p-8 rounded-2xl text-center hover:border-[#c60000]/40 transition-all duration-500 hover:-translate-y-1"
                 variants={scrollRevealVariants}
                 initial="initial"
                 whileInView="whileInView"
                 viewport={{ once: true, amount: 0.3 }}
               >
                 <div className="relative flex justify-center mb-4">
-                  <div className="absolute w-14 h-14 bg-[#c60000]/20 blur-2xl rounded-full"></div>
+                  <div className="absolute w-14 h-14 bg-[#c60000]/10 blur-xl rounded-full"></div>
                   <item.icon className="w-10 h-10 text-[#c60000] relative z-10" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-black">{item.title}</h3>
@@ -1380,7 +1468,6 @@ DEFINED BY RESULTS."
     </PageWrapper>
   );
 };
-
 
 const ServicesPage = ({ setPage }) => {
   const services = [
