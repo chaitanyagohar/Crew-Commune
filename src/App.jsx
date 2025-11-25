@@ -122,7 +122,7 @@ const PageWrapper = ({ children }) => (
     initial="initial"
     animate="animate"
     exit="exit"
-    className="bg-white transform-gpu" // Changed to bg-white
+    className="bg-white transform-gpu"
   >
     {children}
   </motion.div>
@@ -833,10 +833,10 @@ const HomePage = ({ setPage }) => {
       img: "./events.jpg",
     },
     {
-      title: "Sports & Corporate Merchandise",
+      title: "Sports Wear & Corporate Merchandise",
       icon: Globe,
       desc: "Custom apparel and merchandise that connects your brand with your community.",
-      img: "./merchandise2.png",
+      img: "./merchandise3.png",
     },
     {
       title: "PR & Media Management",
@@ -880,12 +880,12 @@ const HomePage = ({ setPage }) => {
     <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
   </div>
 
-  {/* ======= FLOATING IMAGES (keep same) ======= */}
+  {/* ======= FLOATING IMAGES (Desktop Only) ======= */}
   {heroImages.map((img, index) => (
     <ImageFollower key={index} img={img} index={index} />
   ))}
 
-  {/* ======= HERO TEXT ======= */}
+  {/* ======= HERO TEXT (Desktop) ======= */}
   <div className="relative z-20 max-w-4xl px-4 pointer-events-none">
     <div className="hidden md:block">
       <AnimatedText
@@ -905,39 +905,51 @@ const HomePage = ({ setPage }) => {
       />
     </div>
 
-    {/* ======= MOBILE VERSION ======= */}
+    {/* ======= MOBILE VERSION (Redesigned) ======= */}
     <motion.div
-      className="md:hidden flex flex-col items-center justify-center relative h-80"
+      className="md:hidden flex flex-col items-center justify-center relative h-full w-full px-4 z-20"
       initial="initial"
       animate="animate"
     >
-      <motion.span
-        initial={{ y: 0, scale: 0.5, opacity: 0 }}
+      {/* Text Group - Stacked for Impact */}
+      <div className="flex flex-col items-center justify-center mb-8">
+        <motion.span
+          initial={{ y: 20, opacity: 0 }}
+          animate={{
+            y: 0,
+            opacity: 1,
+            transition: { duration: 0.8, ease: "easeOut", delay: 0.5 },
+          }}
+          className="block text-5xl font-extrabold text-white tracking-tight leading-none"
+        >
+          INNOVATING
+        </motion.span>
+        <motion.span
+          initial={{ y: 20, opacity: 0 }}
+          animate={{
+            y: 0,
+            opacity: 1,
+            transition: { duration: 0.8, ease: "easeOut", delay: 0.7 },
+          }}
+          className="block text-6xl font-extrabold text-[#c60000] tracking-tighter leading-none"
+        >
+          SUCCESS.
+        </motion.span>
+      </div>
+
+      {/* Slideshow - Styled as a premium card below text */}
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
         animate={{
-          y: -110,
           scale: 1,
           opacity: 1,
-          transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 1 },
+          transition: { duration: 0.8, delay: 1 },
         }}
-        className="block text-6xl font-extrabold text-white absolute z-20"
+        className="w-full max-w-[85vw] aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-white/20 relative"
       >
-        INNOVATING
-      </motion.span>
-      <motion.div className="w-[70vw] h-[25vh] rounded-xl shadow-2xl pointer-events-auto absolute z-10">
+        <div className="absolute inset-0 bg-black/10 z-10 pointer-events-none" />
         <MobileHeroGapSlideshow images={heroImages} />
       </motion.div>
-      <motion.span
-        initial={{ y: 0, scale: 0.5, opacity: 0 }}
-        animate={{
-          y: 110,
-          scale: 1,
-          opacity: 1,
-          transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 1 },
-        }}
-        className="block text-6xl font-extrabold text-[#c60000] absolute z-20"
-      >
-        SUCCESS.
-      </motion.span>
     </motion.div>
   </div>
 
@@ -1132,7 +1144,7 @@ const ServiceTile = ({ service, onClick, className = "" }) => (
       src={service.img}
       alt={service.title}
       // ✅ FORCE FIX: Using inline style to guarantee the image is not cropped
-      style={{ objectFit: "contain" }} 
+      style={{ objectFit: "cover" }} 
       className="absolute inset-0 w-full h-full opacity-100 group-hover:scale-105 transition-transform duration-700"
       onError={(e) => {
         e.currentTarget.src =
@@ -2326,6 +2338,39 @@ const CircularText = ({
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState("home");
+
+  // --- SEO Meta Tags Injection ---
+  useEffect(() => {
+    document.title = "Crew Commune | Sports & Corporate Event Management Agency";
+    
+    const metaTags = [
+      { name: "description", content: "Crew Commune is a premier event management agency in Pune & Mumbai specializing in sports events, corporate branding, merchandise, and PR. We innovate success." },
+      { name: "keywords", content: "Sports Event Management, Corporate Events, Marathon Organizers Pune, Event Branding, Crew Commune, Pune Event Agency" },
+      // Open Graph / Social Media
+      { property: "og:title", content: "Crew Commune | Innovating Success" },
+      { property: "og:description", content: "Empowering Sports, Enriching Communities. We manage events, branding, merchandise, and PR." },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://placehold.co/1200x630/c60000/ffffff?text=Crew+Commune" }, // Replace with actual OG image URL
+    ];
+
+    metaTags.forEach(tag => {
+      let element;
+      if (tag.name) {
+        element = document.querySelector(`meta[name="${tag.name}"]`);
+      } else if (tag.property) {
+        element = document.querySelector(`meta[property="${tag.property}"]`);
+      }
+
+      if (!element) {
+        element = document.createElement('meta');
+        if (tag.name) element.setAttribute('name', tag.name);
+        if (tag.property) element.setAttribute('property', tag.property);
+        document.head.appendChild(element);
+      }
+      
+      element.setAttribute('content', tag.content);
+    });
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
