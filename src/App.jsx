@@ -6,8 +6,8 @@ import {
   useScroll,
   useTransform,
   useSpring,
-  useAnimation, // Added for CircularText
-  useMotionValue, // Added for CircularText
+  useAnimation,
+  useMotionValue,
 } from "framer-motion";
 
 import {
@@ -32,9 +32,9 @@ import {
 } from "lucide-react";
 
 /*
- * This is a single-file, MULTI-PAGE React application showcase.
- * It uses React State to simulate page navigation, allowing for
- * full-page animations with Framer motion.
+ * LIGHT THEME VERSION
+ * Accent: #c60000 (Deep Red)
+ * Background: White / Light Gray
 */
 
 // --- Animation Variants ---
@@ -84,7 +84,6 @@ const pageVariants = {
   },
 };
 
-// For staggering children elements
 const staggerContainerVariants = {
   initial: { opacity: 0 },
   animate: {
@@ -96,7 +95,6 @@ const staggerContainerVariants = {
   },
 };
 
-// Fade in from bottom
 const fadeInUpVariants = {
   initial: { opacity: 0, y: 30 },
   animate: {
@@ -106,7 +104,6 @@ const fadeInUpVariants = {
   },
 };
 
-// For elements revealing on scroll
 const scrollRevealVariants = {
   initial: { opacity: 0, y: 50 },
   whileInView: {
@@ -119,24 +116,18 @@ const scrollRevealVariants = {
 
 // --- Reusable Components ---
 
-/**
- * Higher-Order Component to wrap each page with animation.
- */
 const PageWrapper = ({ children }) => (
   <motion.div
     variants={pageVariants}
     initial="initial"
     animate="animate"
     exit="exit"
-    className="bg-[#111111] transform-gpu"
+    className="bg-white transform-gpu" // Changed to bg-white
   >
     {children}
   </motion.div>
 );
 
-/**
- * AnimatedText Component (Word-by-word reveal)
- */
 const AnimatedText = ({
   text,
   el: Wrapper = "p",
@@ -186,64 +177,6 @@ const AnimatedText = ({
   );
 };
 
-/**
- * NEW: AnimatedTextLines Component (Line-by-line reveal)
- */
-const AnimatedTextLines = ({
-  text,
-  el: Wrapper = "h2",
-  className,
-  once = true,
-  delay = 0,
-}) => {
-  const lines = text.split("\n");
-
-  const containerVariants = {
-    initial: { opacity: 0 },
-    animate: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: delay,
-      },
-    },
-  };
-
-  const lineVariants = {
-    initial: { y: "100%" },
-    animate: {
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.6, -0.05, 0.01, 0.99],
-      },
-    },
-  };
-
-  return (
-    <Wrapper className={className}>
-      <motion.span
-        variants={containerVariants}
-        initial="initial"
-        whileInView="animate"
-        viewport={{ once: once, amount: 0.3 }}
-        className="inline-block"
-      >
-        {lines.map((line, index) => (
-          <span key={index} className="block overflow-hidden">
-            <motion.span variants={lineVariants} className="block">
-              {line}
-            </motion.span>
-          </span>
-        ))}
-      </motion.span>
-    </Wrapper>
-  );
-};
-
-/**
- * MagneticButton Component
- */
 const MagneticButton = ({ children, strength = 30, ...props }) => {
   const ref = useRef(null);
   const springConfig = {
@@ -288,50 +221,6 @@ const MagneticButton = ({ children, strength = 30, ...props }) => {
   );
 };
 
-/**
- * Reusable component for Clip-Path Image Reveals
- */
-const AnimatedImage = ({ src, alt, className = "" }) => {
-  const variants = {
-    initial: {
-      clipPath: "inset(100% 0% 0% 0%)",
-      scale: 1.1,
-    },
-    whileInView: {
-      clipPath: "inset(0% 0% 0% 0%)",
-      scale: 1,
-      transition: {
-        duration: 1,
-        ease: [0.6, 0.01, -0.05, 0.95],
-      },
-    },
-  };
-
-  return (
-    <motion.div
-      variants={variants}
-      initial="initial"
-      whileInView="whileInView"
-      viewport={{ once: true, amount: 0.3 }}
-      className={`w-full h-full ${className}`}
-      data-cursor-hover="image"
-    >
-      <img
-        src={src}
-        alt={alt}
-        className="w-full h-full object-cover"
-        onError={(e) => {
-          e.target.src =
-            "https://placehold.co/600x400/333333/555555?text=Image";
-        }}
-      />
-    </motion.div>
-  );
-};
-
-/**
- * ParallaxImage Component
- */
 const ParallaxImage = ({ src, alt, className = "" }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -353,16 +242,13 @@ const ParallaxImage = ({ src, alt, className = "" }) => {
         style={{ y }}
         onError={(e) => {
           e.target.src =
-            "https://placehold.co/600x400/333333/555555?text=Image";
+            "https://placehold.co/600x400/eeeeee/333333?text=Image";
         }}
       />
     </div>
   );
 };
 
-/**
- * MobileHeroGapSlideshow Component
- */
 const MobileHeroGapSlideshow = ({ images }) => {
   const [index, setIndex] = useState(0);
 
@@ -395,7 +281,7 @@ const MobileHeroGapSlideshow = ({ images }) => {
           className="absolute inset-0 w-full h-full object-cover"
           onError={(e) => {
             e.target.src =
-              "https://placehold.co/300x200/333333/555555?text=Image";
+              "https://placehold.co/300x200/eeeeee/333333?text=Image";
           }}
         />
       </AnimatePresence>
@@ -403,15 +289,12 @@ const MobileHeroGapSlideshow = ({ images }) => {
   );
 };
 
-/**
- * Accordion (FAQ) Component
- */
 const AccordionItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <motion.div
-      className="border-b border-neutral-800"
+      className="border-b border-neutral-200" // Light border
       layout
       onClick={() => setIsOpen(!isOpen)}
     >
@@ -419,7 +302,7 @@ const AccordionItem = ({ question, answer }) => {
         className="flex justify-between items-center py-6 cursor-pointer"
         data-cursor-hover="link"
       >
-        <h3 className="text-xl font-medium text-[#F5F5F5]">{question}</h3>
+        <h3 className="text-xl font-medium text-black">{question}</h3>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -445,7 +328,7 @@ const AccordionItem = ({ question, answer }) => {
             }}
             className="pb-6"
           >
-            <p className="text-neutral-400 text-base leading-relaxed">
+            <p className="text-neutral-600 text-base leading-relaxed">
               {answer}
             </p>
           </motion.div>
@@ -454,24 +337,6 @@ const AccordionItem = ({ question, answer }) => {
     </motion.div>
   );
 };
-
-// NEW COMPONENT: Service Differentiator
-const ServiceDifferentiator = ({ stat, label, description, icon: Icon }) => (
-  <motion.div
-    className="bg-neutral-900/50 border-r border-b border-neutral-800 p-8 text-center"
-    variants={scrollRevealVariants}
-    initial="initial"
-    whileInView="whileInView"
-    viewport={{ once: true, amount: 0.3 }}
-  >
-    {Icon && <Icon className="w-16 h-16 text-[#BFFF00] mx-auto mb-3" />}
-    {stat && (
-      <h3 className="text-6xl font-extrabold text-[#BFFF00] mb-2">{stat}</h3>
-    )}
-    <p className="text-xl font-semibold mb-2">{label}</p>
-    <p className="text-neutral-400 text-sm">{description}</p>
-  </motion.div>
-);
 
 // --- Hero Section Data & Components ---
 
@@ -585,7 +450,7 @@ const ImageFollower = ({ img, index }) => {
     hover: {
       scale: 1.05,
       zIndex: 100,
-      boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.5)",
+      boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)", // Lighter shadow
       rotate: img.rotate + (img.rotate > 0 ? 5 : -5),
       transition: { duration: 0.3 },
     },
@@ -614,7 +479,7 @@ const ImageFollower = ({ img, index }) => {
         className="w-full h-full object-cover transition-all duration-500"
         onError={(e) => {
           e.target.src =
-            "https://placehold.co/300x400/333333/555555?text=Image";
+            "https://placehold.co/300x400/eeeeee/333333?text=Image";
         }}
       />
     </motion.div>
@@ -659,8 +524,9 @@ const LoadingScreen = () => {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-white"
     >
+      {/* Kept video but used a red overlay for the theme */}
       <video
         autoPlay
         muted
@@ -671,11 +537,11 @@ const LoadingScreen = () => {
         <source src="/crewload2.mp4" type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-[#BFFF00]/70"></div>
+      <div className="absolute inset-0 bg-[#c60000]/30 mix-blend-multiply"></div>
 
       <motion.div
         variants={loadingTextVariants}
-        className="relative text-4xl md:text-5xl font-extrabold text-black tracking-widest"
+        className="relative text-4xl md:text-5xl font-extrabold text-white tracking-widest"
       >
         CREW COMMUNE
       </motion.div>
@@ -684,7 +550,7 @@ const LoadingScreen = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="absolute bottom-6 right-8 text-black text-lg font-semibold"
+        className="absolute bottom-6 right-8 text-white text-lg font-semibold"
       >
         {progress}%
       </motion.div>
@@ -712,7 +578,7 @@ const Header = ({ setPage, currentPage }) => {
     { name: "About", page: "about" },
     { name: "Services", page: "services" },
     { name: "Events", page: "events" },
-    { name: "FAQ", page: "faq" }, // ✅ Added FAQ in header
+    { name: "FAQ", page: "faq" },
   ];
 
   const handleNavClick = (page) => {
@@ -728,7 +594,7 @@ const Header = ({ setPage, currentPage }) => {
       transition={{ duration: 0.5, delay: 0.2 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled || isMenuOpen
-          ? "bg-[#1C1C1C]/80 backdrop-blur-lg shadow-lg"
+          ? "bg-white/90 backdrop-blur-lg shadow-sm border-b border-neutral-200"
           : "bg-transparent"
       }`}
     >
@@ -740,11 +606,11 @@ const Header = ({ setPage, currentPage }) => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.5 }}
               onClick={() => handleNavClick("home")}
-              className="cursor-pointer bg-white px-2 py-1 rounded-md"
+              className="cursor-pointer px-2 py-1 rounded-md"
               data-cursor-hover="link"
             >
               <img
-                src="/newlogo.png"
+                src="/logo2bg.png"
                 alt="Crew Commune Logo"
                 className="h-10 w-auto block"
               />
@@ -762,8 +628,8 @@ const Header = ({ setPage, currentPage }) => {
                   data-cursor-hover="link"
                   className={`px-4 py-2 text-sm font-medium transition-colors ${
                     currentPage === item.page
-                      ? "text-[#BFFF00] font-semibold"
-                      : "text-neutral-300 hover:text-[#F5F5F5]"
+                      ? "text-[#c60000] font-bold"
+                      : "text-neutral-600 hover:text-black"
                   }`}
                 >
                   {item.name}
@@ -778,8 +644,8 @@ const Header = ({ setPage, currentPage }) => {
                 data-cursor-hover="link"
                 className={`ml-4 px-5 py-2 text-sm font-medium rounded-full ${
                   currentPage === "contact"
-                    ? "bg-[#BFFF00] text-black font-semibold shadow-[0_0_10px_#BFFF00]"
-                    : "bg-[#BFFF00] text-black"
+                    ? "bg-[#c60000] text-white font-semibold shadow-[0_0_10px_#c60000]"
+                    : "bg-[#c60000] text-white"
                 }`}
               >
                 Reach Us 
@@ -795,7 +661,7 @@ const Header = ({ setPage, currentPage }) => {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 data-cursor-hover="link"
-                className="text-[#F5F5F5]"
+                className="text-black"
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </motion.button>
@@ -813,7 +679,7 @@ const Header = ({ setPage, currentPage }) => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden overflow-hidden"
           >
-            <div className="bg-[#1C1C1C]/80 backdrop-blur-lg border border-neutral-700 rounded-2xl shadow-lg p-4 space-y-2 m-4">
+            <div className="bg-white/95 backdrop-blur-lg border border-neutral-200 rounded-2xl shadow-xl p-4 space-y-2 m-4">
               {navItems.map((item) => (
                 <button
                   key={item.name}
@@ -821,8 +687,8 @@ const Header = ({ setPage, currentPage }) => {
                   data-cursor-hover="link"
                   className={`block w-full text-left px-4 py-3 text-base font-medium rounded-lg ${
                     currentPage === item.page
-                      ? "text-[#BFFF00] bg-neutral-800 font-semibold"
-                      : "text-neutral-300 hover:text-[#F5F5F5] hover:bg-neutral-800"
+                      ? "text-[#c60000] bg-neutral-100 font-semibold"
+                      : "text-neutral-600 hover:text-black hover:bg-neutral-50"
                   }`}
                 >
                   {item.name}
@@ -833,8 +699,8 @@ const Header = ({ setPage, currentPage }) => {
                 data-cursor-hover="link"
                 className={`mt-2 block w-full text-left px-4 py-3 text-base font-medium rounded-lg ${
                   currentPage === "contact"
-                    ? "bg-[#BFFF00] text-black font-semibold shadow-[0_0_10px_#BFFF00]"
-                    : "bg-[#BFFF00] text-black"
+                    ? "bg-[#c60000] text-white font-semibold shadow-[0_0_10px_#c60000]"
+                    : "bg-[#c60000] text-white"
                 }`}
               >
                 <span>Get In Touch</span>
@@ -855,7 +721,7 @@ const Marquee = ({ text, speed = 20 }) => {
   const x = useTransform(scrollY, [0, 1000], ["0%", "-10%"], { clamp: false });
 
   return (
-    <div className="relative w-full h-24 md:h-32 overflow-hidden bg-black text-[#F5F5F5] border-y-2 border-neutral-800">
+    <div className="relative w-full h-24 md:h-32 overflow-hidden bg-[#c60000] text-white border-y-2 border-white">
       <motion.div
         className="absolute top-0 left-0 w-full h-full flex items-center"
         style={{ x }}
@@ -883,7 +749,7 @@ const Marquee = ({ text, speed = 20 }) => {
 };
 
 /* ===========================
-   FOOTER (Redesigned) — with active highlight
+   FOOTER (Updated Location)
 =========================== */
 const Footer = ({ setPage, currentPage }) => {
   const links = [
@@ -896,24 +762,29 @@ const Footer = ({ setPage, currentPage }) => {
   ];
 
   return (
-    <footer className="bg-black text-[#aaa] py-16 border-t border-[#222]">
+    <footer className="bg-[#f5f5f5] text-neutral-600 py-16 border-t border-neutral-200">
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8 px-6">
-        <div >
-          <img src="/newlogo.png" alt="Crew Commune" className="h-10 mb-4 rounded-md" />
+        <div>
+          <img
+            src="/logo2bg.png"
+            alt="Crew Commune"
+            className="h-10 mb-4 rounded-md mix-blend-multiply"
+          />
           <p className="text-sm">
-            Empowering Sports, <br />Enriching Communities.
+            Empowering Sports, <br />
+            Enriching Communities.
           </p>
         </div>
         <div>
-          <h3 className="font-semibold text-white mb-4">Quick Links</h3>
+          <h3 className="font-semibold text-black mb-4">Quick Links</h3>
           {links.map((l) => (
             <p
               key={l.page}
               onClick={() => setPage(l.page)}
               className={`cursor-pointer text-sm mb-2 transition-colors ${
                 currentPage === l.page
-                  ? "text-[#BFFF00] font-semibold"
-                  : "hover:text-[#BFFF00]"
+                  ? "text-[#c60000] font-semibold"
+                  : "hover:text-[#c60000]"
               }`}
             >
               {l.label}
@@ -921,28 +792,29 @@ const Footer = ({ setPage, currentPage }) => {
           ))}
         </div>
         <div>
-          <h3 className="font-semibold text-white mb-4">Contact</h3>
-          <p className="text-sm">Mumbai, India</p>
+          <h3 className="font-semibold text-black mb-4">Contact</h3>
+          <p className="text-sm">Pune, India</p>
           <p className="text-sm">raikars.yash@gmail.com</p>
           <p className="text-sm">+91 90823 55787</p>
         </div>
         <div>
-          <h3 className="font-semibold text-white mb-4">Follow Us</h3>
+          <h3 className="font-semibold text-black mb-4">Follow Us</h3>
           <div className="flex space-x-4">
             {[Twitter, Instagram, Linkedin].map((Icon, i) => (
-              <Icon key={i} className="text-[#BFFF00] hover:scale-110 transition" />
+              <Icon
+                key={i}
+                className="text-[#c60000] hover:scale-110 transition"
+              />
             ))}
           </div>
         </div>
       </div>
-      <div className="text-center text-xs mt-10 text-[#777] border-t border-[#222] pt-6">
+      <div className="text-center text-xs mt-10 text-neutral-500 border-t border-neutral-300 pt-6">
         © {new Date().getFullYear()} Crew Commune. All rights reserved.
       </div>
     </footer>
   );
 };
-
-
 /**
  * 4. Home Page (Bento Services + Outcomes & Process)
  */
@@ -958,7 +830,7 @@ const HomePage = ({ setPage }) => {
       title: "Event Productions and Branding",
       icon: Clapperboard,
       desc: "Full-scale event production, from stage design to live broadcasting and branding.",
-      img: "./coorporateevents.jpg",
+      img: "./events.jpg",
     },
     {
       title: "Sports & Corporate Merchandise",
@@ -983,64 +855,13 @@ const HomePage = ({ setPage }) => {
     heroImages[5],
   ];
 
-  const heroSlideshowImages = [
-    "/v1.jpg",
-    "/v2.jpg",
-    "/v3.jpeg",
-    "/v4.jpeg",
-    "/v5.avif",
-    "/v6.avif",
-    "/v7.webp",
-    "/v8.webp",
-    "/v9.webp",
-    "/v10.webp",
-  ];
-  const [heroBgIndex, setHeroBgIndex] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHeroBgIndex((prev) => (prev + 1) % heroSlideshowImages.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, [heroSlideshowImages.length]);
-
-  const mobileHeroContainerVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-  };
-  const textInnovatingVariants = {
-    initial: { y: 0, scale: 0.5, opacity: 0 },
-    animate: {
-      y: -110,
-      scale: 1,
-      opacity: 1,
-      transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 1 },
-    },
-  };
-  const textSuccessVariants = {
-    initial: { y: 0, scale: 0.5, opacity: 0 },
-    animate: {
-      y: 110,
-      scale: 1,
-      opacity: 1,
-      transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 1 },
-    },
-  };
-  const slideshowVariants = {
-    initial: { scale: 0, opacity: 0 },
-    animate: {
-      scale: 1,
-      opacity: 1,
-      transition: { delay: 1.1, duration: 0.6, ease: [0.4, 0, 0.2, 1] },
-    },
-  };
-
   return (
     <PageWrapper>
       {/* Hero Section */}
 <motion.section
   initial="initial"
   animate="animate"
-  className="relative h-[100vh] flex items-center justify-center text-center overflow-hidden bg-black"
+  className="relative h-[100vh] flex items-center justify-center text-center overflow-hidden bg-white"
 >
   {/* ======= VIDEO BACKGROUND ======= */}
   <div className="absolute inset-0 z-0">
@@ -1055,8 +876,8 @@ const HomePage = ({ setPage }) => {
       {/* Fallback message */}
       Your browser does not support the video tag.
     </video>
-    {/* Overlay gradient for better text contrast */}
-    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/80" />
+    {/* Overlay gradient for better text contrast - KEPT DARK FOR VIDEO VISIBILITY */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
   </div>
 
   {/* ======= FLOATING IMAGES (keep same) ======= */}
@@ -1079,7 +900,7 @@ const HomePage = ({ setPage }) => {
       <AnimatedText
         text="SUCCESS."
         el="span"
-        className="block text-[#BFFF00] text-6xl sm:text-8xl font-extrabold"
+        className="block text-[#c60000] text-6xl sm:text-8xl font-extrabold"
         delay={1.2}
       />
     </div>
@@ -1113,7 +934,7 @@ const HomePage = ({ setPage }) => {
           opacity: 1,
           transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 1 },
         }}
-        className="block text-6xl font-extrabold text-[#BFFF00] absolute z-20"
+        className="block text-6xl font-extrabold text-[#c60000] absolute z-20"
       >
         SUCCESS.
       </motion.span>
@@ -1132,7 +953,7 @@ const HomePage = ({ setPage }) => {
       text="SCROLL*DOWN*EXPLORE*"
       onHover="speedUp"
       spinDuration={12}
-      className="text-[#BFFF00] uppercase text-xs font-bold"
+      className="text-[#c60000] uppercase text-s font-bold"
     />
   </motion.div>
 </motion.section>
@@ -1142,15 +963,15 @@ const HomePage = ({ setPage }) => {
         text="Sports & Corporate Event Management • Event Productions and Branding • Sports & Corporate Merchandise • PR & Media Management •"
         speed={80}
       />
-{/* ===== NEW SLOGAN SECTION ===== */} <section className="relative bg-black py-36 text-center overflow-hidden border-t border-neutral-900"> {/* Background glow */} <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(191,255,0,0.06)_0%,transparent_70%)]"></div> {/* Content */} <motion.div variants={scrollRevealVariants} initial="initial" whileInView="whileInView" viewport={{ once: true, amount: 0.3 }} className="relative z-10 max-w-5xl mx-auto px-6" > <h2 className="text-4xl md:text-6xl font-extrabold leading-tight text-white"> <span className="bg-gradient-to-r from-[#BFFF00] via-white to-[#BFFF00] bg-clip-text text-transparent"> Empowering Sports, </span>{" "} <br className="hidden sm:block" /> <span className="text-neutral-100">Enriching Communities.</span> </h2> <div className="h-[2px] w-24 bg-gradient-to-r from-[#BFFF00] to-transparent mx-auto my-8"></div> <p className="text-neutral-400 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"> Driving growth, unity, and progress through powerful sporting experiences and meaningful community connections. </p> </motion.div> </section>
+{/* ===== NEW SLOGAN SECTION ===== */} <section className="relative bg-white py-36 text-center overflow-hidden border-t border-neutral-100"> {/* Background glow */} <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.06)_0%,transparent_70%)]"></div> {/* Content */} <motion.div variants={scrollRevealVariants} initial="initial" whileInView="whileInView" viewport={{ once: true, amount: 0.3 }} className="relative z-10 max-w-5xl mx-auto px-6" > <h2 className="text-4xl md:text-6xl font-extrabold leading-tight text-black"> <span className="bg-gradient-to-r from-[#c60000] via-neutral-600 to-[#c60000] bg-clip-text text-transparent"> Empowering Sports, </span>{" "} <br className="hidden sm:block" /> <span className="text-neutral-500">Enriching Communities.</span> </h2> <div className="h-[2px] w-24 bg-gradient-to-r from-[#c60000] to-transparent mx-auto my-8"></div> <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"> Driving growth, unity, and progress through powerful sporting experiences and meaningful community connections. </p> </motion.div> </section>
 
       {/* Our Core Expertise – BENTO GRID */}
-      <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
+      <section className="py-20 md:py-32 bg-neutral-50 text-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedText
             text="Our Core Expertise"
             el="h2"
-            className="text-3xl font-bold text-center sm:text-4xl mb-16"
+            className="text-3xl font-bold text-center sm:text-4xl mb-16 text-black"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
@@ -1186,7 +1007,7 @@ const HomePage = ({ setPage }) => {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setPage("services")}
-                className="px-6 py-3 rounded-full bg-[#BFFF00] text-black font-semibold"
+                className="px-6 py-3 rounded-full bg-[#c60000] text-white font-semibold"
                 data-cursor-hover="link"
               >
                 View All Services
@@ -1197,38 +1018,15 @@ const HomePage = ({ setPage }) => {
       </section>
 
       {/* Outcomes & Process */}
-      <section className="bg-black text-[#F5F5F5] py-20 md:py-32 border-t border-neutral-800">
+      <section className="bg-white text-black py-20 md:py-32 border-t border-neutral-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Outcomes */}
-          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
-            {[
-              { stat: "250K+", label: "Participants Engaged" },
-              { stat: "120+", label: "Events Delivered" },
-              { stat: "40+", label: "Brands Activated" },
-              { stat: "99.3%", label: "On-time Delivery" },
-            ].map((k) => (
-              <motion.div
-                key={k.label}
-                variants={scrollRevealVariants}
-                initial="initial"
-                whileInView="whileInView"
-                viewport={{ once: true, amount: 0.3 }}
-                className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 text-center"
-              >
-                <div className="text-3xl md:text-4xl font-extrabold text-[#BFFF00]">
-                  {k.stat}
-                </div>
-                <div className="mt-2 text-neutral-300">{k.label}</div>
-              </motion.div>
-            ))}
-          </div> */}
-
+          
           {/* Process */}
-          <div className="rounded-3xl border border-neutral-800 bg-gradient-to-br from-neutral-900/60 to-neutral-900/30 p-6 md:p-10">
+          <div className="rounded-3xl border border-neutral-200 bg-gradient-to-br from-neutral-100 to-white p-6 md:p-10 shadow-lg">
             <AnimatedText
               text="How We Deliver Impact"
               el="h3"
-              className="text-2xl md:text-3xl font-bold text-center mb-10"
+              className="text-2xl md:text-3xl font-bold text-center mb-10 text-black"
             />
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
@@ -1243,11 +1041,11 @@ const HomePage = ({ setPage }) => {
                   initial="initial"
                   whileInView="whileInView"
                   viewport={{ once: true, amount: 0.3 }}
-                  className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6"
+                  className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <s.icon className="w-8 h-8 text-[#BFFF00]" />
-                  <h4 className="mt-4 text-xl font-semibold">{s.title}</h4>
-                  <p className="mt-2 text-neutral-400 text-sm">{s.desc}</p>
+                  <s.icon className="w-8 h-8 text-[#c60000]" />
+                  <h4 className="mt-4 text-xl font-semibold text-black">{s.title}</h4>
+                  <p className="mt-2 text-neutral-600 text-sm">{s.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -1261,7 +1059,7 @@ const HomePage = ({ setPage }) => {
                     window.scrollTo(0, 0);
                     setPage("contact");
                   }}
-                  className="text-lg font-semibold text-[#BFFF00] flex items-center space-x-2 mx-auto"
+                  className="text-lg font-semibold text-[#c60000] flex items-center space-x-2 mx-auto"
                   data-cursor-hover="link"
                 >
                   <span>Plan Your Next Event</span>
@@ -1274,19 +1072,19 @@ const HomePage = ({ setPage }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
+      <section className="py-20 md:py-32 bg-neutral-50 text-black">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedText
             text="Ready to Start Your Journey?"
             el="h2"
-            className="text-3xl sm:text-4xl font-bold mb-6"
+            className="text-3xl sm:text-4xl font-bold mb-6 text-black"
           />
           <motion.p
             variants={scrollRevealVariants}
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true, amount: 0.3 }}
-            className="text-lg text-neutral-400 max-w-2xl mx-auto mb-10"
+            className="text-lg text-neutral-600 max-w-2xl mx-auto mb-10"
           >
             Let's collaborate to create unforgettable experiences and elevate
             your brand to the next level. Get in touch with our team today to
@@ -1300,7 +1098,7 @@ const HomePage = ({ setPage }) => {
                 window.scrollTo(0, 0);
                 setPage("contact");
               }}
-              className="text-lg font-semibold text-[#BFFF00] flex items-center space-x-2 mx-auto"
+              className="text-lg font-semibold text-[#c60000] flex items-center space-x-2 mx-auto"
               data-cursor-hover="link"
             >
               <span>Reach Us</span>
@@ -1325,7 +1123,7 @@ const ServiceTile = ({ service, onClick, className = "" }) => (
     transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
     className={[
       "relative overflow-hidden rounded-3xl group text-left",
-      "bg-neutral-950 border border-neutral-800",
+      "bg-[#1a1a1a] border border-neutral-200", // Dark BG behind image for contrast
       className,
     ].join(" ")}
     data-cursor-hover="image"
@@ -1333,25 +1131,30 @@ const ServiceTile = ({ service, onClick, className = "" }) => (
     <img
       src={service.img}
       alt={service.title}
-      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+      // ✅ FORCE FIX: Using inline style to guarantee the image is not cropped
+      style={{ objectFit: "contain" }} 
+      className="absolute inset-0 w-full h-full opacity-100 group-hover:scale-105 transition-transform duration-700"
       onError={(e) => {
         e.currentTarget.src =
-          "https://placehold.co/800x600/1C1C1C/BFFF00?text=Service";
+          "https://placehold.co/800x600/1a1a1a/c60000?text=Service";
       }}
     />
 
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+    {/* Gradient overlay - Essential for text readability */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
     <div className="relative z-10 p-6 md:p-8 flex flex-col justify-end h-full">
       <div className="flex items-center gap-3">
-        <service.icon className="w-6 h-6 md:w-8 md:h-8 text-[#BFFF00]" />
-        <h3 className="font-extrabold text-xl md:text-2xl">{service.title}</h3>
+        <service.icon className="w-6 h-6 md:w-8 md:h-8 text-[#c60000]" />
+        <h3 className="font-extrabold text-xl md:text-2xl text-white">
+          {service.title}
+        </h3>
       </div>
-      <p className="text-neutral-300 mt-3 text-sm md:text-base">
+      <p className="text-neutral-300 mt-3 text-sm md:text-base font-medium">
         {service.desc}
       </p>
       <motion.span
-        className="mt-4 inline-flex items-center text-[#BFFF00] font-semibold text-sm"
+        className="mt-4 inline-flex items-center text-[#c60000] font-semibold text-sm"
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -1362,35 +1165,6 @@ const ServiceTile = ({ service, onClick, className = "" }) => (
 
     <div className="absolute inset-0 scale-100 group-hover:scale-[1.03] transition-transform duration-700" />
   </motion.button>
-);
-
-// NEW COMPONENT: Milestone for About Page Scroll
-const Milestone = ({ year, title, description, isRight }) => (
-  <motion.div
-    className="relative grid grid-cols-1 md:grid-cols-2 gap-8 py-8"
-    variants={scrollRevealVariants}
-    initial="initial"
-    whileInView="whileInView"
-    viewport={{ once: true, amount: 0.3 }}
-  >
-    <div
-      className={`md:pr-8 ${
-        isRight ? "md:order-2 md:text-left" : "md:text-right"
-      }`}
-    >
-      <h3 className="text-5xl font-extrabold text-[#BFFF00]">{year}</h3>
-      <h4 className="text-2xl font-semibold mt-2 text-[#F5F5F5]">{title}</h4>
-    </div>
-
-    <div
-      className={`md:pl-8 border-l-2 border-neutral-800 relative ${
-        isRight ? "md:order-1" : ""
-      }`}
-    >
-      <div className="absolute w-4 h-4 rounded-full bg-[#BFFF00] -left-2 top-11"></div>
-      <p className="text-lg text-neutral-400 pt-12 md:pt-2">{description}</p>
-    </div>
-  </motion.div>
 );
 
 /**
@@ -1446,13 +1220,13 @@ const AboutPage = () => {
   return (
     <PageWrapper>
       {/* ===== HERO ===== */}
-      <header className="relative h-[70vh] min-h-[500px] flex items-center justify-center text-[#F5F5F5] text-center overflow-hidden">
+      <header className="relative h-[70vh] min-h-[500px] flex items-center justify-center text-white text-center overflow-hidden">
         <div
           className="absolute inset-0 bg-black z-0 overflow-hidden"
           data-cursor-hover="image"
         >
           <ParallaxImage src="delhimarathon.avif" alt="Founder portrait" />
-          <div className="absolute inset-0 bg-black/80"></div>
+          <div className="absolute inset-0 bg-black/60"></div>
         </div>
 
         <motion.div
@@ -1463,7 +1237,7 @@ const AboutPage = () => {
         >
           <motion.span
             variants={fadeInUpVariants}
-            className="text-sm font-bold text-[#BFFF00] uppercase tracking-widest"
+            className="text-sm font-bold text-[#c60000] uppercase tracking-widest"
           >
             Our Foundation
           </motion.span>
@@ -1476,7 +1250,7 @@ DEFINED BY RESULTS."
           />
           <motion.p
             variants={fadeInUpVariants}
-            className="max-w-2xl mx-auto text-lg text-neutral-300"
+            className="max-w-2xl mx-auto text-lg text-neutral-200"
           >
             We saw a need for an agency that operates as a true partner. Our foundation is built on 10+ years of global industry experience, tailored for the Indian market.
           </motion.p>
@@ -1484,7 +1258,7 @@ DEFINED BY RESULTS."
       </header>
 
       {/* ===== MISSION ===== */}
-      <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
+      <section className="py-20 md:py-32 bg-white text-black">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-lg">
           <motion.div
             variants={scrollRevealVariants}
@@ -1497,21 +1271,21 @@ DEFINED BY RESULTS."
               el="h2"
               className="text-3xl font-bold mb-6"
             />
-            <p className="mb-6 text-neutral-300">
+            <p className="mb-6 text-neutral-600">
               Crew Commune exists to bridge the gap between vision and execution. We’re more than a service provider — we’re an extension of your team, driving every project with strategy, passion, and purpose.
             </p>
-            <p className="mb-6 text-neutral-300">
+            <p className="mb-6 text-neutral-600">
               From managing international marathons to producing corporate experiences and merchandise, our mission stays the same — empower communities through sport, creativity, and connection.
             </p>
-            <p className="font-semibold text-[#F5F5F5]">- Yash Raikar, Founder</p>
+            <p className="font-semibold text-black">- Yash Raikar, Founder</p>
           </motion.div>
         </div>
       </section>
 
       {/* ===== WHAT SETS US APART ===== */}
-      <section className="relative py-28 bg-gradient-to-b from-black via-[#0b0b0b] to-black text-[#F5F5F5] overflow-hidden border-t border-neutral-800">
+      <section className="relative py-28 bg-neutral-50 text-black overflow-hidden border-t border-neutral-200">
         {/* Subtle gradient glow background */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(191,255,0,0.06)_0%,transparent_70%)] blur-3xl"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.06)_0%,transparent_70%)] blur-3xl"></div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <AnimatedText
@@ -1519,7 +1293,7 @@ DEFINED BY RESULTS."
             el="h2"
             className="text-4xl md:text-6xl font-extrabold text-center mb-16"
           />
-          <p className="max-w-2xl mx-auto text-center text-neutral-400 mb-20">
+          <p className="max-w-2xl mx-auto text-center text-neutral-600 mb-20">
             We’re not another agency — we’re the Crew behind your success. 
             A collective of strategists, creators, and doers who make ideas tangible and brands unforgettable.
           </p>
@@ -1534,16 +1308,16 @@ DEFINED BY RESULTS."
                 viewport={{ once: true, amount: 0.3 }}
                 whileHover={{ scale: 1.04 }}
                 transition={{ duration: 0.5 }}
-                className="relative bg-[#111]/60 backdrop-blur-sm border border-neutral-800 rounded-3xl p-8 overflow-hidden group hover:border-[#BFFF00]/60 hover:shadow-[0_0_25px_rgba(191,255,0,0.15)] transition-all duration-500"
+                className="relative bg-white border border-neutral-200 rounded-3xl p-8 overflow-hidden group hover:border-[#c60000]/60 hover:shadow-[0_0_25px_rgba(198,0,0,0.15)] transition-all duration-500"
               >
                 {/* Soft glow ring */}
-                <div className="absolute -top-10 -right-10 w-36 h-36 bg-[#BFFF00]/10 blur-3xl rounded-full group-hover:opacity-100 opacity-0 transition-all"></div>
+                <div className="absolute -top-10 -right-10 w-36 h-36 bg-[#c60000]/10 blur-3xl rounded-full group-hover:opacity-100 opacity-0 transition-all"></div>
 
-                <item.icon className="w-10 h-10 text-[#BFFF00] mb-4 relative z-10" />
-                <h3 className="text-2xl font-bold mb-3 relative z-10">
+                <item.icon className="w-10 h-10 text-[#c60000] mb-4 relative z-10" />
+                <h3 className="text-2xl font-bold mb-3 relative z-10 text-black">
                   {item.title}
                 </h3>
-                <p className="text-neutral-400 leading-relaxed relative z-10">
+                <p className="text-neutral-600 leading-relaxed relative z-10">
                   {item.desc}
                 </p>
               </motion.div>
@@ -1555,7 +1329,7 @@ DEFINED BY RESULTS."
             variants={scrollRevealVariants}
             initial="initial"
             whileInView="whileInView"
-            className="text-center mt-20 text-lg italic text-neutral-400"
+            className="text-center mt-20 text-lg italic text-neutral-500"
           >
             “Every great event has a story — and we make sure yours becomes unforgettable.”
           </motion.div>
@@ -1563,7 +1337,7 @@ DEFINED BY RESULTS."
       </section>
 
       {/* ===== CORE VALUES ===== */}
-      <section className="py-20 md:py-32 bg-[#111111] text-[#F5F5F5]">
+      <section className="py-20 md:py-32 bg-white text-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedText
             text="Our Core Values"
@@ -1574,18 +1348,18 @@ DEFINED BY RESULTS."
             {values.map((item, index) => (
               <motion.div
                 key={index}
-                className="bg-neutral-900/50 border border-neutral-800 p-8 rounded-2xl text-center hover:border-[#BFFF00]/40 transition-all duration-500"
+                className="bg-neutral-50 border border-neutral-200 p-8 rounded-2xl text-center hover:border-[#c60000]/40 transition-all duration-500"
                 variants={scrollRevealVariants}
                 initial="initial"
                 whileInView="whileInView"
                 viewport={{ once: true, amount: 0.3 }}
               >
                 <div className="relative flex justify-center mb-4">
-                  <div className="absolute w-14 h-14 bg-[#BFFF00]/20 blur-2xl rounded-full"></div>
-                  <item.icon className="w-10 h-10 text-[#BFFF00] relative z-10" />
+                  <div className="absolute w-14 h-14 bg-[#c60000]/20 blur-2xl rounded-full"></div>
+                  <item.icon className="w-10 h-10 text-[#c60000] relative z-10" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
-                <p className="text-neutral-400 text-sm">{item.desc}</p>
+                <h3 className="text-xl font-semibold mb-3 text-black">{item.title}</h3>
+                <p className="text-neutral-600 text-sm">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -1608,19 +1382,19 @@ const ServicesPage = ({ setPage }) => {
       title: "Event Productions and Branding",
       desc: "We bring ideas to life through powerful event production and branding solutions. From stage design, lighting, and sound to creative installations and digital media — every element is crafted to reflect your brand’s identity and purpose. Our team ensures seamless execution, delivering visually striking, high-impact experiences that capture attention and elevate your event’s presence. Whether it’s a corporate celebration, sporting event, or public campaign, we make your brand stand out where it matters most.",
       icon: Clapperboard,
-      img: "./coorporateevents.jpg",
+      img: "./events.jpg",
     },
     {
-      title: "Sports & Corporate Merchandise",
+      title: "Sports Wear & Corporate Merchandise",
       desc: "We specialize in the manufacturing and customization of premium sports and corporate merchandise. From performance wear and event accessories to branded gifts and promotional items, we create products that seamlessly combine quality, functionality, and style. With in-house design and production capabilities, we ensure every item reflects your brand’s identity — making it perfect for marathons, corporate events, team gear, and promotional campaigns.",
       icon: Globe,
-      img: "./merchandise3.png",
+      img: "/merchandise3.png",
     },
     {
       title: "PR & Media Management",
       desc: "At Crew Commune, we specialize in strategic PR and media management for events and athletes, ensuring maximum visibility and impactful storytelling. From press coverage and social media campaigns to influencer collaborations and media relations, we craft narratives that build strong public presence and lasting brand value. Our experienced team manages every communication touchpoint — before, during, and after the event — to deliver the right message to the right audience at the right time.",
       icon: Users,
-      img: "./media.jpg",
+      img: "./media.png",
     },
   ];
 
@@ -1654,7 +1428,7 @@ const ServicesPage = ({ setPage }) => {
   return (
     <PageWrapper>
       {/* ===== HERO SECTION ===== */}
-      <header className="relative h-[60vh] flex items-center justify-center text-center text-[#F5F5F5] overflow-hidden">
+      <header className="relative h-[60vh] flex items-center justify-center text-center text-white overflow-hidden">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -1662,11 +1436,12 @@ const ServicesPage = ({ setPage }) => {
           className="absolute inset-0 z-0"
         >
           <img
-            src="./servicehero.jpg"
+            src="./servicehero.webp"
             alt="Services Background"
-            className="w-full h-full object-cover opacity-40"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-transparent" />
+          {/* Keep dark overlay on hero image for white text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/5 to-transparent" />
         </motion.div>
 
         <div className="relative z-10 px-4 max-w-3xl">
@@ -1679,15 +1454,15 @@ const ServicesPage = ({ setPage }) => {
           <AnimatedText
             text="Expert services to elevate your brand, manage your talent, and create unforgettable events."
             el="p"
-            className="text-base md:text-xl text-neutral-400 leading-relaxed"
+            className="text-base md:text-xl text-neutral-200 leading-relaxed"
             delay={0.6}
           />
         </div>
       </header>
 
       {/* ===== DIFFERENTIATORS ===== */}
-      <section className="bg-[#111111] py-20 relative border-y border-neutral-800 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(191,255,0,0.05)_0%,transparent_70%)]"></div>
+      <section className="bg-white py-20 relative border-y border-neutral-200 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.05)_0%,transparent_70%)]"></div>
 
         <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-4 gap-6">
           {differentiators.map((item, index) => (
@@ -1699,25 +1474,25 @@ const ServicesPage = ({ setPage }) => {
               viewport={{ once: true, amount: 0.3 }}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 150, damping: 10 }}
-              className="bg-neutral-900/40 border border-[#2a2a2a] backdrop-blur-sm rounded-2xl p-8 text-center shadow-[0_0_15px_rgba(191,255,0,0.05)]"
+              className="bg-white border border-neutral-200 rounded-2xl p-8 text-center shadow-sm hover:shadow-lg transition-shadow"
             >
               {item.icon && (
-                <item.icon className="w-12 h-12 mx-auto mb-3 text-[#BFFF00]" />
+                <item.icon className="w-12 h-12 mx-auto mb-3 text-[#c60000]" />
               )}
               {item.stat && (
-                <h3 className="text-5xl font-extrabold text-[#BFFF00] mb-2">
+                <h3 className="text-5xl font-extrabold text-[#c60000] mb-2">
                   {item.stat}
                 </h3>
               )}
-              <h4 className="text-xl font-semibold mb-2">{item.label}</h4>
-              <p className="text-neutral-400 text-sm">{item.description}</p>
+              <h4 className="text-xl font-semibold mb-2 text-black">{item.label}</h4>
+              <p className="text-neutral-600 text-sm">{item.description}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* ===== SERVICES GRID (MOBILE OPTIMIZED) ===== */}
-      <section className="bg-black py-20 md:py-28 relative overflow-hidden">
+      <section className="bg-neutral-50 py-20 md:py-28 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-28 md:space-y-48">
           {services.map((service, index) => (
             <motion.div
@@ -1734,7 +1509,7 @@ const ServicesPage = ({ setPage }) => {
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="relative w-full md:w-[60%] overflow-hidden rounded-2xl shadow-[0_0_50px_rgba(191,255,0,0.08)] group"
+                className="relative w-full md:w-[60%] overflow-hidden rounded-2xl shadow-xl group"
                 data-cursor-hover="image"
               >
                 <motion.img
@@ -1743,16 +1518,15 @@ const ServicesPage = ({ setPage }) => {
                   className="w-full h-[280px] sm:h-[320px] md:h-[450px] object-cover rounded-2xl transition-transform duration-[1.4s] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-110 object-center"
                   onError={(e) =>
                     (e.currentTarget.src =
-                      "https://placehold.co/1200x600/1C1C1C/BFFF00?text=Service+Image")
+                      "https://placehold.co/1200x600/eeeeee/c60000?text=Service+Image")
                   }
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_center,rgba(191,255,0,0.12)_0%,transparent_70%)]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                 <motion.div
-                  className="absolute inset-0 border border-[#BFFF00]/20 rounded-2xl"
+                  className="absolute inset-0 border border-[#c60000]/20 rounded-2xl"
                   whileHover={{
-                    borderColor: "#BFFF00",
-                    boxShadow: "0px 0px 30px rgba(191,255,0,0.5)",
+                    borderColor: "#c60000",
+                    boxShadow: "0px 0px 30px rgba(198,0,0,0.3)",
                   }}
                 />
               </motion.div>
@@ -1763,18 +1537,18 @@ const ServicesPage = ({ setPage }) => {
                   index % 2 === 0 ? "md:pl-16" : "md:pr-16"
                 }`}
               >
-                <service.icon className="w-8 h-8 md:w-10 md:h-10 text-[#BFFF00] mb-3" />
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-3">
+                <service.icon className="w-8 h-8 md:w-10 md:h-10 text-[#c60000] mb-3" />
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-black mb-3">
                   {service.title}
                 </h2>
-                <p className="text-sm sm:text-base md:text-lg text-neutral-400 leading-relaxed">
+                <p className="text-sm sm:text-base md:text-lg text-neutral-600 leading-relaxed">
                   {service.desc}
                 </p>
               </div>
 
               {/* === BACKGROUND GLOW === */}
               <div
-                className={`absolute z-0 w-[350px] h-[350px] blur-3xl rounded-full bg-[#BFFF00]/5 ${
+                className={`absolute z-0 w-[350px] h-[350px] blur-3xl rounded-full bg-[#c60000]/5 ${
                   index % 2 === 0
                     ? "top-[10%] left-[-100px]"
                     : "bottom-[10%] right-[-100px]"
@@ -1786,18 +1560,18 @@ const ServicesPage = ({ setPage }) => {
       </section>
 
       {/* ===== CTA ===== */}
-      <section className="relative py-24 md:py-28 bg-[#111] text-center overflow-hidden border-t border-neutral-800">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(191,255,0,0.08)_0%,transparent_70%)]"></div>
-        <div className="absolute -top-10 -left-20 w-96 h-96 rounded-full bg-[#BFFF00]/5 blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-[#BFFF00]/10 blur-3xl"></div>
+      <section className="relative py-24 md:py-28 bg-white text-center overflow-hidden border-t border-neutral-200">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.05)_0%,transparent_70%)]"></div>
+        <div className="absolute -top-10 -left-20 w-96 h-96 rounded-full bg-[#c60000]/5 blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-[#c60000]/5 blur-3xl"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <AnimatedText
             text="Have a brief? We'll turn it into a win."
             el="h3"
-            className="text-3xl md:text-5xl font-extrabold mb-4"
+            className="text-3xl md:text-5xl font-extrabold mb-4 text-black"
           />
-          <p className="text-neutral-400 text-base md:text-lg mb-10">
+          <p className="text-neutral-600 text-base md:text-lg mb-10">
             Share your goals and constraints—timeline, budget, KPIs—and we’ll
             propose a crisp action plan within 24 hours.
           </p>
@@ -1808,7 +1582,7 @@ const ServicesPage = ({ setPage }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setPage("contact")}
-                className="px-8 py-3 bg-[#BFFF00] text-black font-semibold rounded-full shadow-[0_0_20px_#BFFF00aa] text-sm sm:text-base"
+                className="px-8 py-3 bg-[#c60000] text-white font-semibold rounded-full shadow-[0_0_20px_#c60000aa] text-sm sm:text-base"
               >
                 Get a Custom Quote
               </motion.button>
@@ -1819,7 +1593,7 @@ const ServicesPage = ({ setPage }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setPage("contact")}
-                className="px-8 py-3 border border-[#BFFF00]/50 text-[#BFFF00] rounded-full font-semibold hover:bg-[#BFFF00]/10 transition text-sm sm:text-base"
+                className="px-8 py-3 border border-[#c60000]/50 text-[#c60000] rounded-full font-semibold hover:bg-[#c60000]/10 transition text-sm sm:text-base"
               >
                 Talk to Us
               </motion.button>
@@ -1832,7 +1606,7 @@ const ServicesPage = ({ setPage }) => {
 };
 
 /**
- * ✅ NEW: FAQ Page (moved FAQs here from Services)
+ * ✅ NEW: FAQ Page
  */
 const FaqPage = () => {
   const faqs = [
@@ -1860,20 +1634,20 @@ const FaqPage = () => {
 
   return (
     <PageWrapper>
-      <header className="pt-40 pb-14 bg-black text-[#F5F5F5] text-center">
+      <header className="pt-40 pb-14 bg-white text-black text-center">
         <AnimatedText
           text="Frequently Asked Questions"
           el="h1"
           className="text-5xl font-bold"
           delay={0.4}
         />
-        <p className="text-neutral-400 mt-4 max-w-2xl mx-auto">
+        <p className="text-neutral-600 mt-4 max-w-2xl mx-auto">
           Everything you need to know about our process, deliverables, and
           working together.
         </p>
       </header>
 
-      <section className="py-16 bg-[#111111] text-[#F5F5F5]">
+      <section className="py-16 bg-neutral-50 text-black">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-2">
             {faqs.map((faq, index) => (
@@ -1893,11 +1667,10 @@ const FaqPage = () => {
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 onClick={() => {
                   window.scrollTo(0, 0);
-                  // navigate to contact
                   const evt = new Event("navigate-contact");
                   window.dispatchEvent(evt);
                 }}
-                className="text-lg font-semibold text-[#BFFF00] flex items-center space-x-2 mx-auto"
+                className="text-lg font-semibold text-[#c60000] flex items-center space-x-2 mx-auto"
                 data-cursor-hover="link"
               >
                 <span>Still have questions? Contact us</span>
@@ -1915,31 +1688,169 @@ const FaqPage = () => {
 /* ===========================
    EVENTS PAGE (Updated)
 =========================== */
+/* ===========================
+   EVENTS PAGE (Updated with Modal & Info)
+=========================== */
+
+// 1. Add this new Modal Component before the EventsPage
+const EventModal = ({ event, onClose }) => {
+  if (!event) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col relative"
+      >
+        {/* Header Image */}
+        <div className="relative h-48 sm:h-64 shrink-0">
+          <img
+            src={event.img}
+            alt={event.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md p-2 rounded-full text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
+          <div className="absolute bottom-4 left-6 text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold">{event.title}</h2>
+            <p className="text-[#c60000] font-semibold mt-1 bg-white/90 px-2 py-0.5 rounded-md inline-block">
+              {event.date} • {event.location}
+            </p>
+          </div>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="p-6 overflow-y-auto custom-scrollbar">
+          {event.isComingSoon ? (
+            <div className="text-center py-12">
+              <h3 className="text-2xl font-bold text-neutral-400">
+                More Information Coming Soon...
+              </h3>
+            </div>
+          ) : (
+            <div className="space-y-6 text-neutral-700">
+              {/* Main Description */}
+              <div className="whitespace-pre-line leading-relaxed">
+                {event.fullDesc}
+              </div>
+
+              {/* Highlights */}
+              {event.highlights && (
+                <div className="bg-neutral-50 p-5 rounded-xl border border-neutral-100">
+                  <h3 className="text-lg font-bold text-[#c60000] mb-3">
+                    Event Highlights
+                  </h3>
+                  <ul className="space-y-2">
+                    {event.highlights.map((highlight, idx) => (
+                      <li key={idx} className="flex items-start text-sm">
+                        <span className="mr-2 text-[#c60000]">•</span>
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-6 border-t border-neutral-100 bg-white shrink-0 flex justify-end gap-4">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-full text-neutral-600 font-medium hover:bg-neutral-100 transition-colors"
+          >
+            Close
+          </button>
+          {!event.isComingSoon && (
+            <a
+              href={event.registerLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-2.5 bg-[#c60000] text-white rounded-full font-bold shadow-lg shadow-red-500/30 hover:shadow-red-500/50 hover:scale-105 transition-all flex items-center"
+            >
+              Register Now <ArrowRight size={18} className="ml-2" />
+            </a>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// 2. Updated EventsPage Component
 const EventsPage = ({ setPage }) => {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
   const upcomingEvents = [
-   
     {
-      title: "Udaan Nari Shakti Run",
-      date: "Mar 10, 2026",
-      location: "New Delhi, IN",
-      desc: "A women’s empowerment event celebrating strength, resilience, and equality through fitness and sports.",
-      img: "./udaannari.jpg",
-      registerLink: "/register",
+      title: "Udaan Nari Shakti Run 3.0",
+      date: "Dec 21, 2025",
+      location: "Pune, IN",
+      shortDesc: "A women’s empowerment event celebrating strength, resilience, and equality through fitness and sports.",
+      img: "./udaan-banner.avif",
+      registerLink: "https://www.townscript.com/e/copy-of-udaan-nari-shakti-run-2025-444201",
+      fullDesc: `After the 2 successful seasons of Udaan Nari Shakti Run, we are back with a new resolution for all to keep our society fitter, healthier, and clean.
+
+      Poonam Vishal Vidhate Presents “UDAAN NARI SHAKTI RUN 3.0” - Run for Women Empowerment.
+
+      “UDAAN NARI SHAKTI RUN” - Run for Women Empowerment event is a social initiative aimed at promoting gender equality and empowering women in society. This event brings all the women together to participate in a collective run, fostering a sense of unity and support for women's rights. 
+      
+      The event is an initiative of Poonam Vishal Vidhate, a young, dynamic, and sports enthusiast who is a social worker (Aundh, Baner, Balewadi, Sus-Mahalunge) based in Pune City.
+
+      Running/walking categories - 3 km, 5 Km, and 10 Km.`,
+      highlights: [
+        "Professionally and Affiliated Group of Organisers.",
+        "Registration is FREE of cost to all the Female participants.",
+        "The 3 km category is named “Saree Run” (interested women can run/Walk in a saree).",
+        "Exciting Cash and goodie prizes for the winners.",
+        "Lucky Draw and Best Costume Run Contest.",
+        "Entertainment for Kids Members who will accompany the female participants.",
+        "5 & 10 Kms are Competitive with Timing certificates.",
+        "Promoting Education, Sports, Equal employment, and healthcare access.",
+      ],
+      isComingSoon: false,
     },
-     {
+    {
       title: "Pune Twin City Marathon",
       date: "Feb 08, 2026",
       location: "Pune, IN",
-      desc: "A grand-scale marathon connecting Pune and PCMC — empowering fitness, unity, and community spirit.",
+      shortDesc: "A grand-scale marathon connecting Pune and PCMC — empowering fitness, unity, and community spirit.",
       img: "./punetwincity.jpg",
-      registerLink: "/register",
+      registerLink: "#",
+      fullDesc: "",
+      highlights: [],
+      isComingSoon: true,
     },
   ];
 
   return (
-    <div className="bg-black min-h-screen text-[#F5F5F5] pt-32">
+    <div className="bg-white min-h-screen text-black pt-32">
+      <AnimatePresence>
+        {selectedEvent && (
+          <EventModal
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+          />
+        )}
+      </AnimatePresence>
+
       <h1 className="text-5xl font-bold text-center mb-4">Upcoming Events</h1>
-      <p className="text-center text-neutral-400 mb-12">
+      <p className="text-center text-neutral-600 mb-12">
         Discover our upcoming sports and corporate events powered by Crew Commune.
       </p>
 
@@ -1947,35 +1858,67 @@ const EventsPage = ({ setPage }) => {
         {upcomingEvents.map((event, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.03 }}
-            className="rounded-2xl overflow-hidden bg-[#111] border border-[#222]"
+            whileHover={{ y: -8 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="flex flex-col h-full rounded-2xl overflow-hidden bg-white border border-neutral-200 shadow-lg hover:shadow-2xl transition-shadow"
           >
-            <img
-              src={event.img}
-              alt={event.title}
-              className="h-64 w-full object-cover"
-            />
-            <div className="p-6">
+            <div className="h-64 overflow-hidden relative">
+              <img
+                src={event.img}
+                alt={event.title}
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+              />
+              {event.isComingSoon && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                  <span className="bg-[#c60000] text-white px-4 py-1 rounded-full text-sm font-bold tracking-wide shadow-lg">
+                    COMING SOON
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 flex flex-col flex-grow">
               <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
-              <p className="text-[#BFFF00] text-sm mb-4">
-                {event.location} • {event.date}
+              <p className="text-[#c60000] text-sm mb-4 font-medium flex items-center gap-2">
+                 {event.location} • {event.date}
               </p>
-              <p className="text-neutral-400 mb-6">{event.desc}</p>
-              <a
-                href={event.registerLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-2 bg-[#BFFF00] text-black font-semibold rounded-full hover:scale-105 transition"
-              >
-                Register Now <ArrowRight className="ml-2" />
-              </a>
+              <p className="text-neutral-600 mb-6 flex-grow line-clamp-3">
+                {event.shortDesc}
+              </p>
+
+              <div className="flex gap-3 mt-auto">
+                <button
+                  onClick={() => setSelectedEvent(event)}
+                  className="flex-1 py-2.5 rounded-full border border-neutral-300 font-semibold text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400 transition-colors"
+                >
+                  View Details
+                </button>
+                
+                {event.isComingSoon ? (
+                  <button
+                    disabled
+                    className="flex-1 py-2.5 bg-neutral-200 text-neutral-400 font-semibold rounded-full cursor-not-allowed"
+                  >
+                    Register Soon
+                  </button>
+                ) : (
+                  <a
+                    href={event.registerLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 bg-[#c60000] text-white font-semibold rounded-full hover:bg-[#a30000] transition-colors flex items-center justify-center gap-2 shadow-md"
+                  >
+                    Register <ArrowRight size={16} />
+                  </a>
+                )}
+              </div>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* NEW CTA SECTION */}
-      <section className="mt-24 text-center relative py-24 bg-gradient-to-r from-[#BFFF00]/20 via-[#BFFF00]/10 to-transparent border-t border-[#222]">
+      {/* CTA SECTION */}
+      <section className="mt-24 text-center relative py-24 bg-gradient-to-r from-[#c60000]/10 via-[#c60000]/5 to-transparent border-t border-neutral-100">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1984,7 +1927,7 @@ const EventsPage = ({ setPage }) => {
         >
           Want to host your own event?
         </motion.h2>
-        <p className="text-neutral-400 max-w-xl mx-auto mb-10">
+        <p className="text-neutral-600 max-w-xl mx-auto mb-10">
           Let Crew Commune handle everything — from logistics and branding to execution and PR. 
           Transform your idea into an extraordinary experience.
         </p>
@@ -1992,7 +1935,7 @@ const EventsPage = ({ setPage }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setPage("contact")}
-          className="px-10 py-4 bg-[#BFFF00] text-black rounded-full font-bold text-lg shadow-[0_0_20px_#BFFF00AA]"
+          className="px-10 py-4 bg-[#c60000] text-white rounded-full font-bold text-lg shadow-[0_0_20px_#c60000AA]"
         >
           Plan Your Event Now <ArrowRight className="inline ml-2" />
         </motion.button>
@@ -2001,17 +1944,19 @@ const EventsPage = ({ setPage }) => {
   );
 };
 
-/**
- * 8. Contact Page
- */
+/* ===========================
+   CONTACT PAGE (Updated with Pune HQ & New Cities)
+=========================== */
 const ContactPage = () => (
   <PageWrapper>
-    <div className="pt-32 pb-20 bg-black text-[#F5F5F5] text-center">
+    <div className="pt-32 pb-20 bg-white text-black text-center">
       <h1 className="text-5xl font-bold">Reach Us</h1>
-      <p className="text-neutral-400 mt-3">Let's build something great together.</p>
+      <p className="text-neutral-600 mt-3">
+        Let's build something great together.
+      </p>
     </div>
 
-    <div className="bg-[#111111] py-20">
+    <div className="bg-neutral-50 py-20">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 px-6">
         {/* Form */}
         <motion.form
@@ -2027,31 +1972,37 @@ const ContactPage = () => (
             { id: "email", label: "Email", type: "email" },
           ].map((f) => (
             <div key={f.id}>
-              <label htmlFor={f.id} className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor={f.id}
+                className="block mb-2 text-sm font-medium text-black"
+              >
                 {f.label}
               </label>
               <input
                 id={f.id}
                 type={f.type}
                 placeholder={f.label}
-                className="w-full px-4 py-3 bg-[#1C1C1C] border border-[#333] rounded-lg text-sm text-white focus:outline-none focus:border-[#BFFF00]"
+                className="w-full px-4 py-3 bg-white border border-neutral-300 rounded-lg text-sm text-black focus:outline-none focus:border-[#c60000]"
               />
             </div>
           ))}
           <div>
-            <label htmlFor="message" className="block mb-2 text-sm font-medium">
+            <label
+              htmlFor="message"
+              className="block mb-2 text-sm font-medium text-black"
+            >
               Message
             </label>
             <textarea
               id="message"
               rows="5"
               placeholder="How can we help?"
-              className="w-full px-4 py-3 bg-[#1C1C1C] border border-[#333] rounded-lg text-sm text-white focus:outline-none focus:border-[#BFFF00]"
+              className="w-full px-4 py-3 bg-white border border-neutral-300 rounded-lg text-sm text-black focus:outline-none focus:border-[#c60000]"
             ></textarea>
           </div>
           <button
             type="submit"
-            className="px-8 py-3 bg-[#BFFF00] text-black font-bold rounded-full hover:scale-105 transition"
+            className="px-8 py-3 bg-[#c60000] text-white font-bold rounded-full hover:scale-105 transition"
           >
             Send Message
           </button>
@@ -2062,20 +2013,46 @@ const ContactPage = () => (
           variants={scrollRevealVariants}
           initial="initial"
           whileInView="whileInView"
-          className="space-y-6"
+          className="space-y-8"
         >
-          <h2 className="text-3xl font-bold mb-6">Contact Details</h2>
-          <div>
-            <p className="text-lg text-[#BFFF00]">Email</p>
-            <p className="text-neutral-400">raikars.yash@gmail.com</p>
+          <h2 className="text-3xl font-bold mb-2 text-black">Contact Details</h2>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div>
+              <p className="text-lg text-[#c60000] font-semibold mb-1">Email</p>
+              <p className="text-neutral-600">raikars.yash@gmail.com</p>
+            </div>
+            <div>
+              <p className="text-lg text-[#c60000] font-semibold mb-1">Phone</p>
+              <p className="text-neutral-600">+91 90823 55787</p>
+            </div>
           </div>
+
           <div>
-            <p className="text-lg text-[#BFFF00]">Phone</p>
-            <p className="text-neutral-400">+91 90823 55787</p>
+            <p className="text-lg text-[#c60000] font-semibold mb-2">Pune HQ</p>
+            <div className="text-neutral-600 text-lg leading-relaxed flex items-start gap-2">
+              <Globe className="w-6 h-6 shrink-0 mt-1" />
+              <span>
+                Yash Orchid, Baner, <br />
+                Pune, Maharashtra, India
+              </span>
+            </div>
           </div>
-          <div>
-            <p className="text-lg text-[#BFFF00]">Mumbai HQ</p>
-            <p className="text-neutral-400">123 Creative Lane, Bandra West, Mumbai, IN</p>
+
+          <div className="pt-6 border-t border-neutral-200">
+            <p className="text-lg text-[#c60000] font-semibold mb-4">
+              Also Present In
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {["Nagpur", "Bangalore", "Mumbai"].map((city) => (
+                <div
+                  key={city}
+                  className="bg-white border border-neutral-200 px-5 py-2 rounded-full text-neutral-700 font-medium shadow-sm hover:border-[#c60000] hover:text-[#c60000] transition-colors cursor-default"
+                >
+                  {city}
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>
@@ -2142,28 +2119,29 @@ const CustomCursor = () => {
     default: {
       height: 16,
       width: 16,
-      backgroundColor: "#BFFF00",
+      backgroundColor: "#c60000",
       mixBlendMode: "normal",
       scale: 1,
     },
     link: {
       height: 24,
       width: 24,
-      backgroundColor: "#BFFF00",
-      mixBlendMode: "difference",
+      backgroundColor: "#c60000",
+      mixBlendMode: "normal", // Removed difference blending for red cursor
       scale: 1,
+      opacity: 0.8
     },
     image: {
       height: 64,
       width: 64,
-      backgroundColor: "#F5F5F5",
-      mixBlendMode: "normal",
+      backgroundColor: "#ffffff",
+      mixBlendMode: "difference",
       scale: 1,
     },
     magnetic: {
       height: 16,
       width: 16,
-      backgroundColor: "#BFFF00",
+      backgroundColor: "#c60000",
       mixBlendMode: "normal",
       scale: 0.5,
     },
@@ -2371,7 +2349,7 @@ function App() {
         return <AboutPage key="about" />;
       case "events":
         return <EventsPage key="events" setPage={handleSetPage} />;
-      case "faq": // ✅ New FAQ route
+      case "faq":
         return <FaqPage key="faq" />;
       case "contact":
         return <ContactPage key="contact" />;
@@ -2384,7 +2362,7 @@ function App() {
     <React.Fragment>
       <CircularTextStyles />
       <CustomCursor />
-      <div className="bg-[#111111] font-sans antialiased scroll-smooth text-[#F5F5F5]">
+      <div className="bg-white font-sans antialiased scroll-smooth text-black">
         <AnimatePresence>{isLoading && <LoadingScreen key="loader" />}</AnimatePresence>
 
         {!isLoading && (
