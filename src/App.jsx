@@ -800,7 +800,7 @@ const Footer = ({ setPage, currentPage }) => {
         <div>
           <h3 className="font-semibold text-black mb-4">Contact</h3>
           <p className="text-sm">Pune, India</p>
-          <p className="text-sm">raikars.yash@gmail.com</p>
+          <p className="text-sm">Team@crewcommune.com</p>
           <p className="text-sm">+91 90823 55787</p>
         </div>
         <div>
@@ -984,7 +984,7 @@ const HomePage = ({ setPage }) => {
 {/* ===== NEW SLOGAN SECTION ===== */} <section className="relative bg-white py-16 text-center overflow-hidden border-t border-neutral-100"> {/* Background glow */} <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.06)_0%,transparent_70%)]"></div> {/* Content */} <motion.div variants={scrollRevealVariants} initial="initial" whileInView="whileInView" viewport={{ once: true, amount: 0.3 }} className="relative z-10 max-w-5xl mx-auto px-6" > <h2 className="text-4xl md:text-6xl font-extrabold leading-tight text-black"> <span className="bg-gradient-to-r from-[#c60000] via-neutral-600 to-[#c60000] bg-clip-text text-transparent"> Empowering Sports, </span>{" "} <br className="hidden sm:block" /> <span className="text-neutral-500">Enriching Communities.</span> </h2> <div className="h-[2px] w-24 bg-gradient-to-r from-[#c60000] to-transparent mx-auto my-8"></div> <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"> Driving growth, unity, and progress through powerful sporting experiences and meaningful community connections. </p> </motion.div> </section>
 
       {/* Our Core Expertise – BENTO GRID */}
-      <section className="py-20 md:py-32 bg-neutral-50 text-black">
+      <section className="py-10 md:py-32 bg-neutral-50 text-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedText
             text="Our Core Expertise"
@@ -1036,7 +1036,7 @@ const HomePage = ({ setPage }) => {
       </section>
 
       {/* Outcomes & Process */}
-      <section className="bg-white text-black py-20 md:py-32 border-t border-neutral-200">
+      <section className="bg-white text-black py-16 md:py-32 border-t border-neutral-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           
           {/* Process */}
@@ -1090,7 +1090,7 @@ const HomePage = ({ setPage }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-32 bg-neutral-50 text-black">
+      <section className="py-10 md:py-32 bg-neutral-50 text-black">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
           <AnimatedText
             text="Ready to Start Your Journey?"
@@ -1323,7 +1323,7 @@ DEFINED BY RESULTS."
       </header>
 
       {/* ===== MISSION ===== */}
-      <section className="py-20 md:py-32 bg-white text-black">
+      <section className="py-16 md:py-32 bg-white text-black">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-lg">
           <motion.div
             variants={scrollRevealVariants}
@@ -1348,7 +1348,7 @@ DEFINED BY RESULTS."
       </section>
 
       {/* ===== WHY CHOOSE CREW COMMUNE (NEW SECTION) ===== */}
-      <section className="py-20 bg-neutral-50 border-y border-neutral-200">
+      <section className="py-14 bg-neutral-50 border-y border-neutral-200">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <AnimatedText
@@ -1437,7 +1437,7 @@ DEFINED BY RESULTS."
       </section>
 
       {/* ===== CORE VALUES ===== */}
-      <section className="py-20 md:py-32 bg-white text-black">
+      <section className="py-14 md:py-32 bg-white text-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedText
             text="Our Core Values"
@@ -1560,7 +1560,7 @@ const ServicesPage = ({ setPage }) => {
       </header>
 
       {/* ===== DIFFERENTIATORS ===== */}
-      <section className="bg-white py-20 relative border-y border-neutral-200 overflow-hidden">
+      <section className="bg-white py-14 relative border-y border-neutral-200 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.05)_0%,transparent_70%)]"></div>
 
         <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-4 gap-6">
@@ -1591,7 +1591,7 @@ const ServicesPage = ({ setPage }) => {
       </section>
 
       {/* ===== SERVICES GRID (MOBILE OPTIMIZED) ===== */}
-      <section className="bg-neutral-50 py-20 md:py-28 relative overflow-hidden">
+      <section className="bg-neutral-50 py-16 md:py-28 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-28 md:space-y-48">
           {services.map((service, index) => (
             <motion.div
@@ -1659,7 +1659,7 @@ const ServicesPage = ({ setPage }) => {
       </section>
 
       {/* ===== CTA ===== */}
-      <section className="relative py-24 md:py-28 bg-white text-center overflow-hidden border-t border-neutral-200">
+      <section className="relative py-16 md:py-28 bg-white text-center overflow-hidden border-t border-neutral-200">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,0,0,0.05)_0%,transparent_70%)]"></div>
         <div className="absolute -top-10 -left-20 w-96 h-96 rounded-full bg-[#c60000]/5 blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-[#c60000]/5 blur-3xl"></div>
@@ -2055,7 +2055,7 @@ const ContactPage = () => (
       </p>
     </div>
 
-    <div className="bg-neutral-50 py-20">
+    <div className="bg-neutral-50 py-16">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 px-6">
         {/* Form */}
         <motion.form
